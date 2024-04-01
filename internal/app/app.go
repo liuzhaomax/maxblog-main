@@ -3,11 +3,8 @@ package app
 import (
 	"context"
 	"fmt"
-	"github.com/liuzhaomax/go-maxms/internal/core"
-	"github.com/liuzhaomax/go-maxms/src/api_user_rpc/pb"
+	"github.com/liuzhaomax/maxblog-main/internal/core"
 	"github.com/sirupsen/logrus"
-	"google.golang.org/grpc"
-	"net"
 	"net/http"
 	"os"
 	"os/signal"
@@ -93,35 +90,6 @@ func InitHttpServer(ctx context.Context, handler http.Handler) func() {
 	}
 }
 
-func InitRpcServer(ctx context.Context, injector *Injector) func() {
-	cfg := core.GetConfig()
-	cfg.App.Logger.Info(core.FormatInfo("服务启动开始"))
-	addr := fmt.Sprintf("%s:%s", cfg.Server.Host, cfg.Server.Port)
-	server := grpc.NewServer(
-		// 注册RPC中间件
-		grpc.UnaryInterceptor(core.LoggerForRPC),
-	)
-	pb.RegisterUserServiceServer(server, injector.RPCService)
-	go func() {
-		listen, err := net.Listen("tcp", addr)
-		if err != nil {
-			cfg.App.Logger.WithField(core.FAILURE, core.GetFuncName()).Fatal(core.FormatError(core.Unknown, "服务监听失败", err))
-		}
-		cfg.App.Logger.WithContext(ctx).Infof("Service %s is running at %s", cfg.App.Name, addr)
-		err = server.Serve(listen)
-		if err != nil {
-			cfg.App.Logger.WithField(core.FAILURE, core.GetFuncName()).Fatal(core.FormatError(core.Unknown, "服务启动失败", err))
-		}
-	}()
-	return func() {
-		cfg.App.Logger.Info(core.FormatInfo("服务关闭开始"))
-		_, cancel := context.WithTimeout(ctx, time.Second*time.Duration(cfg.Server.ShutdownTimeout))
-		defer cancel()
-		server.Stop()
-		cfg.App.Logger.Info(core.FormatInfo("服务关闭成功"))
-	}
-}
-
 func Init(ctx context.Context, optFuncs ...Option) func() {
 	// initialising options
 	opts := options{}
@@ -133,20 +101,11 @@ func Init(ctx context.Context, optFuncs ...Option) func() {
 	cfg := core.GetConfig()
 	// init injector
 	injector, cleanInjection, _ := InitInjector()
-	// init server by protocol
-	var cleanServer func()
-	switch cfg.Server.Protocol {
-	case "http":
-		// register apis
-		injector.Handler.RegisterStaticFS(injector.Engine, opts.WWWDir) // static
-		injector.Handler.Register(injector.Engine)                      // dynamic
-		// init server
-		cleanServer = InitHttpServer(ctx, injector.Engine)
-	case "rpc":
-		cleanServer = InitRpcServer(ctx, injector)
-	default:
-		cleanServer = InitRpcServer(ctx, injector)
-	}
+	// register apis
+	injector.Handler.RegisterStaticFS(injector.Engine, opts.WWWDir) // static
+	injector.Handler.Register(injector.Engine)                      // dynamic
+	// init server
+	cleanServer := InitHttpServer(ctx, injector.Engine)
 	cfg.App.Logger.WithFields(logrus.Fields{
 		"app_name": cfg.App.Name,
 		"version":  cfg.App.Version,

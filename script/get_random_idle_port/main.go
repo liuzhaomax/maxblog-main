@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/liuzhaomax/go-maxms/internal/core"
+	"github.com/liuzhaomax/maxblog-main/internal/core"
 	"github.com/spf13/viper"
 	"log"
 	"net"
