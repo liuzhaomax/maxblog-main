@@ -75,10 +75,10 @@ func InitInjector() (*Injector, func(), error) {
 	}
 	rocketMQ := &core.RocketMQ{}
 	handlerArticle := &handler.HandlerArticle{
-		Business:    businessArticle,
-		Logger:      coreLogger,
-		Res:         response,
-		RocketMQSet: rocketMQ,
+		Business: businessArticle,
+		Logger:   coreLogger,
+		Res:      response,
+		RocketMQ: rocketMQ,
 	}
 	registry := core.InitPrometheusRegistry()
 	apiHandler := &api.Handler{
