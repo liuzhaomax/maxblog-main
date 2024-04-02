@@ -26,7 +26,7 @@ func MapArticle2ArticleRes(article *model.Article, tags []string) *ArticleRes {
 		deletedAt = article.DeletedAt.Time.String()
 	}
 	return &ArticleRes{
-		Id:        article.ArticleID,
+		Id:        article.ArticleId,
 		CreatedAt: article.CreatedAt.String(),
 		UpdatedAt: article.UpdatedAt.String(),
 		DeletedAt: deletedAt,
