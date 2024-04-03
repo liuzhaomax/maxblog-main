@@ -18,6 +18,6 @@ type Article struct {
 
 type Tag struct {
 	gorm.Model
-	Name      string `gorm:"index:idx_name;unique;varchar(20);not null;"`
-	ArticleId string `gorm:"index:idx_id;unique;varchar(20);"`
+	Name      string `gorm:"index:idx_name;varchar(20);not null;"`
+	ArticleId string `gorm:"index:idx_article_id;varchar(20);"`
 }
