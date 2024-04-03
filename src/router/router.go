@@ -13,10 +13,10 @@ func Register(root *gin.RouterGroup, handler *handler.HandlerArticle, mw *middle
 		{
 			routerArticle.GET("/list", handler.GetArticleList)
 			routerArticle.GET("/tags", handler.GetArticleTags)
-			routerArticle.GET("", handler.GetArticleByID)
+			routerArticle.GET("/article", handler.GetArticleByID)
 			routerArticle.Use(mw.Auth.ValidateToken())
-			routerArticle.PUT("", handler.PutArticleByID)
-			routerArticle.DELETE("", handler.DeleteArticleByID)
+			routerArticle.PUT("/article", handler.PutArticleByID)
+			routerArticle.DELETE("/article", handler.DeleteArticleByID)
 			routerArticle.PUT("/tag", handler.PutTagByName)
 			routerArticle.DELETE("/tag", handler.DeleteTagByName)
 		}
