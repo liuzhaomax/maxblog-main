@@ -40,6 +40,8 @@ paths:
         - $ref: '#/components/parameters/Parent_id'
         - $ref: '#/components/parameters/App_id'
         - $ref: '#/components/parameters/Request_id'
+        - $ref: '#/components/parameters/pageNo'
+        - $ref: '#/components/parameters/pageSize'
     parameters: []
   /maxblog/article/article:
     get:
@@ -509,4 +511,18 @@ components:
       schema:
         type: string
       description: 标签名
+    pageNo:
+      name: pageNo
+      in: query
+      required: false
+      schema:
+        type: string
+      description: 页码
+    pageSize:
+      name: pageSize
+      in: query
+      required: false
+      schema:
+        type: string
+      description: 页容量
   requestBodies: {}
