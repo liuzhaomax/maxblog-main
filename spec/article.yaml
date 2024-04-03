@@ -1,6 +1,6 @@
 openapi: 3.0.3
 x-stoplight:
-  id: nu516ytwiwdp1
+  id: nu516ytwiwdpp
 info:
   title: Article
   version: '1.0'
@@ -41,7 +41,7 @@ paths:
         - $ref: '#/components/parameters/App_id'
         - $ref: '#/components/parameters/Request_id'
     parameters: []
-  /maxblog/article:
+  /maxblog/article/article:
     get:
       summary: Get Article by ID
       tags:
