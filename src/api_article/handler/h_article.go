@@ -22,7 +22,7 @@ func (h *HandlerArticle) GetArticleList(c *gin.Context) {
 		h.Res.ResFailure(c, 500, core.Unknown, "获取文章列表失败", err)
 		return
 	}
-	h.Res.ResSuccess(c, list)
+	h.Res.ResSuccess(c, *list)
 }
 
 func (h *HandlerArticle) GetArticleTags(c *gin.Context) {
@@ -31,7 +31,7 @@ func (h *HandlerArticle) GetArticleTags(c *gin.Context) {
 		h.Res.ResFailure(c, 500, core.Unknown, "获取标签列表失败", err)
 		return
 	}
-	h.Res.ResSuccess(c, tags)
+	h.Res.ResSuccess(c, *tags)
 }
 
 func (h *HandlerArticle) GetArticleByID(c *gin.Context) {
@@ -40,7 +40,7 @@ func (h *HandlerArticle) GetArticleByID(c *gin.Context) {
 		h.Res.ResFailure(c, 500, core.Unknown, "获取文章失败", err)
 		return
 	}
-	h.Res.ResSuccess(c, article)
+	h.Res.ResSuccess(c, *article)
 }
 
 func (h *HandlerArticle) PutArticleByID(c *gin.Context) {
