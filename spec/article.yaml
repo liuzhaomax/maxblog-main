@@ -92,6 +92,7 @@ paths:
         - $ref: '#/components/parameters/Request_id'
         - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/articleId'
+        - $ref: '#/components/parameters/User_id'
     delete:
       summary: Delete Article by ID
       tags:
@@ -115,6 +116,7 @@ paths:
         - $ref: '#/components/parameters/Request_id'
         - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/articleId'
+        - $ref: '#/components/parameters/User_id'
   /maxblog/article/tag:
     parameters: []
     put:
@@ -140,6 +142,7 @@ paths:
         - $ref: '#/components/parameters/Request_id'
         - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/tagName'
+        - $ref: '#/components/parameters/User_id'
     delete:
       summary: Delete Tag by Name
       tags:
@@ -163,6 +166,7 @@ paths:
         - $ref: '#/components/parameters/Request_id'
         - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/tagName'
+        - $ref: '#/components/parameters/User_id'
   /maxblog/article/tags:
     get:
       summary: Get Article Tags
@@ -518,4 +522,11 @@ components:
       schema:
         type: string
       description: 页容量
+    User_id:
+      name: User_id
+      in: header
+      required: true
+      schema:
+        type: string
+      description: 用户ID
   requestBodies: {}
