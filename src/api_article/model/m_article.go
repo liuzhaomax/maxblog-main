@@ -33,7 +33,7 @@ func (m *ModelArticle) QueryTags(c *gin.Context, tags *[]Tag) error {
 }
 
 func (m *ModelArticle) QueryArticleByID(c *gin.Context, article *Article, articleId string) error {
-	result := m.DB.WithContext(c).Where("article_id=?", articleId).First(&article)
+	result := m.DB.WithContext(c).Where("article_id=?", articleId).First(article)
 	if result.RowsAffected == 0 {
 		return result.Error
 	}
@@ -65,7 +65,7 @@ func (m *ModelArticle) DeleteArticleByID(c *gin.Context, articleId string) error
 }
 
 func (m *ModelArticle) QueryTagByName(c *gin.Context, tag *Tag, tagName string) error {
-	result := m.DB.WithContext(c).Where("tag_name=?", tagName).First(&tag)
+	result := m.DB.WithContext(c).Where("name=?", tagName).First(tag)
 	if result.RowsAffected == 0 {
 		return result.Error
 	}
@@ -81,7 +81,7 @@ func (m *ModelArticle) CreateTag(c *gin.Context, tag *Tag) error {
 }
 
 func (m *ModelArticle) UpdateTagByName(c *gin.Context, tag *Tag, tagName string) error {
-	result := m.DB.WithContext(c).Where("tag_name=?", tagName).Updates(tag)
+	result := m.DB.WithContext(c).Where("name=?", tagName).Updates(tag)
 	if result.RowsAffected == 0 {
 		return result.Error
 	}
@@ -89,7 +89,7 @@ func (m *ModelArticle) UpdateTagByName(c *gin.Context, tag *Tag, tagName string)
 }
 
 func (m *ModelArticle) DeleteTagByName(c *gin.Context, tagName string) error {
-	result := m.DB.WithContext(c).Where("tag_name=?", tagName).Delete(&Tag{})
+	result := m.DB.WithContext(c).Where("name=?", tagName).Delete(&Tag{})
 	if result.RowsAffected == 0 {
 		return result.Error
 	}

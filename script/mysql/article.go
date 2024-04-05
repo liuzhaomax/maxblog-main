@@ -11,6 +11,10 @@ func AutoMigrate(db *gorm.DB) error {
 	if err != nil {
 		return err
 	}
+	err = db.AutoMigrate(new(model.Tag))
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -30,4 +34,31 @@ func createArticle(db *gorm.DB) {
 		}
 		db.Create(article)
 	}
+}
+
+func createTag(db *gorm.DB) {
+	tag1 := &model.Tag{
+		Model:      gorm.Model{},
+		Name:       "abc",
+		ArticleIds: "JC23dJhf3bMNZZZCYLjGBk|BNmQim6bueJ7WQJf9pnCo4|n2aZ9oHrHDANtJw8ASVdmh",
+	}
+	db.Create(tag1)
+	tag2 := &model.Tag{
+		Model:      gorm.Model{},
+		Name:       "def",
+		ArticleIds: "JC23dJhf3bMNZZZCYLjGBk|BNmQim6bueJ7WQJf9pnCo4|n2aZ9oHrHDANtJw8ASVdmh",
+	}
+	db.Create(tag2)
+	tag3 := &model.Tag{
+		Model:      gorm.Model{},
+		Name:       "ghi",
+		ArticleIds: "JC23dJhf3bMNZZZCYLjGBk|BNmQim6bueJ7WQJf9pnCo4|n2aZ9oHrHDANtJw8ASVdmh",
+	}
+	db.Create(tag3)
+	tag4 := &model.Tag{
+		Model:      gorm.Model{},
+		Name:       "jkl",
+		ArticleIds: "JC23dJhf3bMNZZZCYLjGBk|BNmQim6bueJ7WQJf9pnCo4|n2aZ9oHrHDANtJw8ASVdmh",
+	}
+	db.Create(tag4)
 }

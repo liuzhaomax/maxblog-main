@@ -5,6 +5,33 @@ import (
 	"github.com/liuzhaomax/maxblog-main/src/api_article/model"
 )
 
+type ArticleReq struct {
+	ArticleId string `json:"articleId"`
+	Title     string `json:"title"`
+	Author    string `json:"author"`
+	Reference string `json:"reference"`
+	Link      string `json:"link"`
+	View      uint   `json:"view"`
+	Like      uint   `json:"like"`
+	Content   string `json:"content"`
+	Tags      string `json:"tags"`
+}
+
+func MapArticleReq2Article(articleReq *ArticleReq) *model.Article {
+	article := &model.Article{
+		ArticleId: articleReq.ArticleId,
+		Title:     articleReq.Title,
+		Author:    articleReq.Author,
+		Reference: articleReq.Reference,
+		Link:      articleReq.Link,
+		View:      articleReq.View,
+		Like:      articleReq.Like,
+		Content:   articleReq.Content,
+		Tags:      articleReq.Tags,
+	}
+	return article
+}
+
 type ArticleRes struct {
 	ArticleId string `json:"articleId"`
 	CreatedAt string `json:"createdAt"`
@@ -47,6 +74,19 @@ func MakeListRes(list *[]model.Article) *[]ArticleRes {
 		listRes = append(listRes, *MapArticle2ArticleRes(&article))
 	}
 	return &listRes
+}
+
+type TagReq struct {
+	Name       string `json:"name"`
+	ArticleIds string `json:"articleIds"`
+}
+
+func MapTagReq2Tag(tagReq *TagReq) *model.Tag {
+	tag := &model.Tag{
+		Name:       tagReq.Name,
+		ArticleIds: tagReq.ArticleIds,
+	}
+	return tag
 }
 
 type TagRes struct {

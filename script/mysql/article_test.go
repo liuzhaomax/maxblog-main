@@ -19,4 +19,5 @@ func TestAutoMigrate(t *testing.T) {
 		panic(err)
 	}
 	createArticle(db)
+	createTag(db)
 }
