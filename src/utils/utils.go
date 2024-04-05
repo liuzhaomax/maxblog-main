@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"github.com/liuzhaomax/maxblog-main/internal/core"
 	"strconv"
 )
 
@@ -16,6 +17,12 @@ func Str2Uint32(str string) (uint32, error) {
 }
 
 func Paginate(pageNoReq string, pageSizeReq string) (int, int, error) {
+	if pageNoReq == core.EmptyString {
+		pageNoReq = "1"
+	}
+	if pageSizeReq == core.EmptyString {
+		pageSizeReq = "20"
+	}
 	pageNo, err := strconv.Atoi(pageNoReq)
 	if err != nil {
 		return 0, 0, err
