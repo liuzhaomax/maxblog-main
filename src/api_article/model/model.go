@@ -14,11 +14,10 @@ type Article struct {
 	View      uint   `gorm:"number;not null;default:0;"`
 	Like      uint   `gorm:"number;not null;default:0;"`
 	Content   string `gorm:"text;"`
-	Tags      string `gorm:"varchar(300)"` // abc|def|ghi|jkl 形式拼接
+	Tags      []Tag  `gorm:"many2many:article_tags;"`
 }
 
 type Tag struct {
-	gorm.Model
-	Name       string `gorm:"index:idx_name;unique;varchar(20);not null;"`
-	ArticleIds string `gorm:"index:idx_article_ids;varchar(300);"` // abc|def|ghi|jkl 形式拼接
+	TagName   string `gorm:"index:idx_tag_name;varchar(20);not null;"`
+	ArticleId string `gorm:"index:idx_article_id;varchar(20);"`
 }

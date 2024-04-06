@@ -94,6 +94,8 @@ paths:
         - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/articleId'
         - $ref: '#/components/parameters/User_id'
+      requestBody:
+        $ref: '#/components/requestBodies/Article'
     delete:
       summary: Delete Article by ID
       tags:
@@ -144,6 +146,8 @@ paths:
         - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/tagName'
         - $ref: '#/components/parameters/User_id'
+      requestBody:
+        $ref: '#/components/requestBodies/Tag'
     delete:
       summary: Delete Tag by Name
       tags:
@@ -210,7 +214,7 @@ components:
     Article:
       title: Article
       x-stoplight:
-        id: ayiloe7s38udn
+        id: 17f352103385d
       type: object
       description: 文章
       x-examples:
@@ -226,7 +230,12 @@ components:
           view: 0
           like: 0
           content: string
-          tags: string
+          tags:
+            - createdAt: '2019-08-24T14:15:22Z'
+              updatedAt: '2019-08-24T14:15:22Z'
+              deletedAt: '2019-08-24T14:15:22Z'
+              tagName: string
+              articleIds: string
       properties:
         createdAt:
           type: string
@@ -256,7 +265,9 @@ components:
         content:
           type: string
         tags:
-          type: string
+          type: array
+          items:
+            $ref: '#/components/schemas/Tag'
       required:
         - createdAt
         - updatedAt
@@ -269,31 +280,16 @@ components:
       type: object
       x-examples:
         Example 1:
-          createdAt: '2019-08-24T14:15:22Z'
-          updatedAt: '2019-08-24T14:15:22Z'
-          deletedAt: '2019-08-24T14:15:22Z'
-          name: string
-          articleIds: string
+          tagName: string
+          articleId: string
       description: 标签
       properties:
-        createdAt:
+        tagName:
           type: string
-          format: date-time
-        updatedAt:
-          type: string
-          format: date-time
-        deletedAt:
-          type: string
-          format: date-time
-        name:
-          type: string
-        articleIds:
+        articleId:
           type: string
       required:
-        - createdAt
-        - updatedAt
-        - name
-        - articleIds
+        - tagName
   responses:
     '200':
       description: Example response
@@ -382,7 +378,12 @@ components:
                     view: 0
                     like: 0
                     content: string
-                    tags: string
+                    tags:
+                      - createdAt: '2019-08-24T14:15:22Z'
+                        updatedAt: '2019-08-24T14:15:22Z'
+                        deletedAt: '2019-08-24T14:15:22Z'
+                        tagName: string
+                        articleIds: string
     200-get-tags:
       description: 获取标签列表
       content:
@@ -403,11 +404,8 @@ components:
                   code: 0
                   desc: string
                 data:
-                  - createdAt: '2019-08-24T14:15:22Z'
-                    updatedAt: '2019-08-24T14:15:22Z'
-                    deletedAt: '2019-08-24T14:15:22Z'
-                    name: string
-                    articleIds: string
+                  - tagName: string
+                    articleId: string
     200-get-article-by-id:
       description: Example response
       content:
@@ -437,7 +435,12 @@ components:
                   view: 0
                   like: 0
                   content: string
-                  tags: string
+                  tags:
+                    - createdAt: '2019-08-24T14:15:22Z'
+                      updatedAt: '2019-08-24T14:15:22Z'
+                      deletedAt: '2019-08-24T14:15:22Z'
+                      tagName: string
+                      articleIds: string
   parameters:
     Client_ip:
       name: Client_ip
@@ -530,4 +533,62 @@ components:
       schema:
         type: string
       description: 用户ID
-  requestBodies: {}
+  requestBodies:
+    Article:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              articleId:
+                type: string
+              title:
+                type: string
+              author:
+                type: string
+              reference:
+                type: string
+              link:
+                type: string
+              view:
+                type: integer
+              like:
+                type: integer
+              content:
+                type: string
+              tags:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Tag'
+            required:
+              - articleId
+              - title
+              - author
+              - view
+              - like
+          examples:
+            Example 1:
+              value:
+                articleId: string
+                title: string
+                author: string
+                reference: string
+                link: string
+                view: 0
+                like: 0
+                content: string
+                tags:
+                  - tagName: string
+                    articleId: string
+      description: article请求体
+    Tag:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Tag'
+          examples:
+            Example 1:
+              value:
+                tagName: string
+                articleId: string
+      description: tag请求体
