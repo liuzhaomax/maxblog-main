@@ -42,6 +42,7 @@ paths:
         - $ref: '#/components/parameters/Request_id'
         - $ref: '#/components/parameters/pageNo'
         - $ref: '#/components/parameters/pageSize'
+        - $ref: '#/components/parameters/tagName'
     parameters: []
   /maxblog/article/article:
     get:
