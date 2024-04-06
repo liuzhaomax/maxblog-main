@@ -28,11 +28,13 @@ func (b *BusinessArticle) GetArticleList(c *gin.Context) (*[]schema.ArticleRes, 
 	if err != nil {
 		return nil, core.FormatError(core.ParseIssue, "Query字段解析错误", err)
 	}
+	tagName := c.Query(utils.TagNameQueryParamName)
 	list := &[]model.Article{}
-	err = b.Model.QueryArticleList(c, list, pageNo, pageSize)
+	err = b.Model.QueryArticleList(c, list, pageNo, pageSize, tagName)
 	if err != nil {
 		return nil, core.FormatError(core.DBDenied, "DB查询文章列表失败", err)
 	}
+	// TODO 加入缓存
 	listRes := schema.MakeListRes(list)
 	return listRes, nil
 }

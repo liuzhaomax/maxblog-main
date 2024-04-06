@@ -3,6 +3,7 @@ package model
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/wire"
+	"github.com/liuzhaomax/maxblog-main/internal/core"
 	"gorm.io/gorm"
 )
 
@@ -12,12 +13,16 @@ type ModelArticle struct {
 	DB *gorm.DB
 }
 
-func (m *ModelArticle) QueryArticleList(c *gin.Context, list *[]Article, pageNo int, pageSize int) error {
+func (m *ModelArticle) QueryArticleList(c *gin.Context, list *[]Article, pageNo int, pageSize int, tagName string) error {
 	offset := (pageNo - 1) * pageSize
 	scope := func(db *gorm.DB) *gorm.DB {
 		return db.Offset(offset).Limit(pageSize)
 	}
-	result := m.DB.WithContext(c).Scopes(scope).Find(list)
+	query := m.DB.WithContext(c)
+	if tagName != core.EmptyString {
+		query = query.Where("tags LIKE ?", "%"+tagName+"%")
+	}
+	result := query.Scopes(scope).Find(list)
 	if result.RowsAffected == 0 {
 		return result.Error
 	}
