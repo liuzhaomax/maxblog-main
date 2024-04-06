@@ -14,7 +14,7 @@ type Article struct {
 	View      uint   `gorm:"number;not null;default:0;"`
 	Like      uint   `gorm:"number;not null;default:0;"`
 	Content   string `gorm:"text;"`
-	Tags      []Tag  `gorm:"many2many:article_tags;"`
+	Tags      []Tag  `gorm:"-"`
 }
 
 type Tag struct {
