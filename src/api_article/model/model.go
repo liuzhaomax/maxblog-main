@@ -14,10 +14,15 @@ type Article struct {
 	View      uint   `gorm:"number;not null;default:0;"`
 	Like      uint   `gorm:"number;not null;default:0;"`
 	Content   string `gorm:"text;"`
-	Tags      []Tag  `gorm:"-"`
+	Tags      []Tag  `gorm:"many2many:article_tag;"`
 }
 
 type Tag struct {
-	TagName   string `gorm:"index:idx_tag_name;varchar(20);not null;"`
-	ArticleId string `gorm:"index:idx_article_id;varchar(20);"`
+	Name     string    `gorm:"primarykey;index:idx_name;unique;varchar(20);not null;"`
+	Articles []Article `gorm:"many2many:article_tag;"`
+}
+
+type ArticleTag struct {
+	ArticleId string // 如果使用Article中的ArticleId，应该用ArticleArticleId
+	TagName   string
 }
