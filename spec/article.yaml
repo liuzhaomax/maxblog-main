@@ -146,8 +146,6 @@ paths:
         - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/tagName'
         - $ref: '#/components/parameters/User_id'
-      requestBody:
-        $ref: '#/components/requestBodies/Tag'
     delete:
       summary: Delete Tag by Name
       tags:
@@ -231,11 +229,8 @@ components:
           like: 0
           content: string
           tags:
-            - createdAt: '2019-08-24T14:15:22Z'
-              updatedAt: '2019-08-24T14:15:22Z'
-              deletedAt: '2019-08-24T14:15:22Z'
-              tagName: string
-              articleIds: string
+            - tagName: string
+              articleId: string
       properties:
         createdAt:
           type: string
@@ -435,12 +430,6 @@ components:
                   view: 0
                   like: 0
                   content: string
-                  tags:
-                    - createdAt: '2019-08-24T14:15:22Z'
-                      updatedAt: '2019-08-24T14:15:22Z'
-                      deletedAt: '2019-08-24T14:15:22Z'
-                      tagName: string
-                      articleIds: string
   parameters:
     Client_ip:
       name: Client_ip
@@ -581,14 +570,3 @@ components:
                   - tagName: string
                     articleId: string
       description: article请求体
-    Tag:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Tag'
-          examples:
-            Example 1:
-              value:
-                tagName: string
-                articleId: string
-      description: tag请求体
