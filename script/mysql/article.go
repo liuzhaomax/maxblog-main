@@ -16,6 +16,7 @@ func createArticle(db *gorm.DB) {
 		Link:      "http://abc.com",
 		View:      uint(0),
 		Like:      uint(0),
+		Cover:     "golang.png",
 		Content:   "我从小就会数数，门前大桥下，游过一群鸭，快来快来数一数，二四六七八。",
 		Tags: []model.Tag{
 			{
@@ -35,6 +36,7 @@ func createArticle(db *gorm.DB) {
 		Link:      "http://abc.com",
 		View:      uint(1),
 		Like:      uint(1),
+		Cover:     "golang.png",
 		Content:   "我从小就会数数，门前大桥下，游过一群鸭，快来快来数一数，二四六七八。",
 		Tags: []model.Tag{
 			{
@@ -51,6 +53,7 @@ func createArticle(db *gorm.DB) {
 		Link:      "http://abc.com",
 		View:      uint(2),
 		Like:      uint(2),
+		Cover:     "golang.png",
 		Content:   "我从小就会数数，门前大桥下，游过一群鸭，快来快来数一数，二四六七八。",
 		Tags:      []model.Tag{},
 	}
@@ -66,6 +69,7 @@ func createAgain(db *gorm.DB) {
 		Link:      "http://abc.com",
 		View:      uint(3),
 		Like:      uint(3),
+		Cover:     "golang.png",
 		Content:   "我从小就会数数，门前大桥下，游过一群鸭，快来快来数一数，二四六七八。",
 		Tags: []model.Tag{
 			{

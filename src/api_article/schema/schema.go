@@ -13,6 +13,7 @@ type ArticleReq struct {
 	Link      string   `json:"link"`
 	View      uint     `json:"view"`
 	Like      uint     `json:"like"`
+	Cover     string   `json:"cover"`
 	Content   string   `json:"content"`
 	Tags      []string `json:"tags"`
 }
@@ -26,6 +27,7 @@ func MapArticleReq2Article(articleReq *ArticleReq) *model.Article {
 		Link:      articleReq.Link,
 		View:      articleReq.View,
 		Like:      articleReq.Like,
+		Cover:     articleReq.Cover,
 		Content:   articleReq.Content,
 		Tags:      []model.Tag{},
 	}
@@ -48,6 +50,7 @@ type ArticleRes struct {
 	Link      string   `json:"link"`
 	View      uint     `json:"view"`
 	Like      uint     `json:"like"`
+	Cover     string   `json:"cover"`
 	Content   string   `json:"content"`
 	Tags      []string `json:"tags"`
 }
@@ -72,6 +75,7 @@ func MapArticle2ArticleRes(article *model.Article) *ArticleRes {
 		Link:      article.Link,
 		View:      article.View,
 		Like:      article.Like,
+		Cover:     article.Cover,
 		Content:   article.Content,
 		Tags:      tagNames,
 	}

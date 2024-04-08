@@ -13,6 +13,7 @@ type Article struct {
 	Link      string `gorm:"varchar(300);"`
 	View      uint   `gorm:"number;not null;default:0;"`
 	Like      uint   `gorm:"number;not null;default:0;"`
+	Cover     string `gorm:"varchar(300);"`
 	Content   string `gorm:"text;"`
 	Tags      []Tag  `gorm:"many2many:article_tag;"`
 }
