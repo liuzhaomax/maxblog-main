@@ -116,58 +116,53 @@ func (b *BusinessArticle) DeleteArticleByID(c *gin.Context) error {
 	return nil
 }
 
-// func (b *BusinessArticle) PutTagByName(c *gin.Context) error {
-//     tagNameReq := c.Query(utils.TagNameQueryParamName)
-//     tagReq := &schema.TagReq{}
-//     err := c.ShouldBind(tagReq)
-//     if err != nil {
-//         return core.FormatError(core.ParseIssue, "请求体无效", err)
-//     }
-//     if tagNameReq != tagReq.TagName {
-//         return core.FormatError(core.Forbidden, "Query信息与请求体信息不符", err)
-//     }
-//     tag := &model.Tag{}
-//     err = b.Tx.ExecTrans(c, func(ctx context.Context) error {
-//         err := b.Model.QueryTagByName(c, tag, tagReq.TagName)
-//         if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
-//             return core.FormatError(core.DBDenied, "DB查询标签失败", err)
-//         }
-//         tag = schema.MapTagReq2Tag(tagReq)
-//         if errors.Is(err, gorm.ErrRecordNotFound) {
-//             err = b.Model.CreateTag(c, tag)
-//             if err != nil {
-//                 return core.FormatError(core.DBDenied, "DB创建标签失败", err)
-//             }
-//         } else {
-//             err = b.Model.UpdateTagByName(c, tag, tagReq.TagName)
-//             if err != nil {
-//                 return core.FormatError(core.DBDenied, "DB更新标签失败", err)
-//             }
-//         }
-//         return nil
-//     })
-//     if err != nil {
-//         return core.FormatError(core.DBDenied, "DB事务失败", err)
-//     }
-//     return nil
-// }
-//
-// func (b *BusinessArticle) DeleteTagByName(c *gin.Context) error {
-//     tagNameReq := c.Query(utils.TagNameQueryParamName)
-//     tag := &model.Tag{}
-//     err := b.Tx.ExecTrans(c, func(ctx context.Context) error {
-//         err := b.Model.QueryTagByName(c, tag, tagNameReq)
-//         if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
-//             return core.FormatError(core.DBDenied, "DB查询标签失败", err)
-//         }
-//         err = b.Model.DeleteTagByName(c, tagNameReq)
-//         if err != nil {
-//             return core.FormatError(core.DBDenied, "DB删除标签失败", err)
-//         }
-//         return nil
-//     })
-//     if err != nil {
-//         return core.FormatError(core.DBDenied, "DB事务失败", err)
-//     }
-//     return nil
-// }
+func (b *BusinessArticle) PutTagByName(c *gin.Context) error {
+	tagNameReq := c.Query(utils.TagNameQueryParamName)
+	tag := &model.Tag{
+		Name: tagNameReq,
+	}
+	err := b.Tx.ExecTrans(c, func(ctx context.Context) error {
+		err := b.Model.QueryTagByName(c, tag, tagNameReq)
+		if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+			return core.FormatError(core.DBDenied, "DB查询标签失败", err)
+		}
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			err = b.Model.CreateTag(c, tag)
+			if err != nil {
+				return core.FormatError(core.DBDenied, "DB创建标签失败", err)
+			}
+		} else {
+			err = b.Model.UpdateTagByName(c, tag, tagNameReq)
+			if err != nil {
+				return core.FormatError(core.DBDenied, "DB更新标签失败", err)
+			}
+		}
+		return nil
+	})
+	if err != nil {
+		return core.FormatError(core.DBDenied, "DB事务失败", err)
+	}
+	return nil
+}
+
+func (b *BusinessArticle) DeleteTagByName(c *gin.Context) error {
+	tagNameReq := c.Query(utils.TagNameQueryParamName)
+	tag := &model.Tag{
+		Name: tagNameReq,
+	}
+	err := b.Tx.ExecTrans(c, func(ctx context.Context) error {
+		err := b.Model.QueryTagByName(c, tag, tagNameReq)
+		if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+			return core.FormatError(core.DBDenied, "DB查询标签失败", err)
+		}
+		err = b.Model.DeleteTagByName(c, tagNameReq)
+		if err != nil {
+			return core.FormatError(core.DBDenied, "DB删除标签失败", err)
+		}
+		return nil
+	})
+	if err != nil {
+		return core.FormatError(core.DBDenied, "DB事务失败", err)
+	}
+	return nil
+}

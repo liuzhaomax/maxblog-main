@@ -121,9 +121,23 @@ func (m *ModelArticle) UpdateTagByName(c *gin.Context, tag *Tag, tagName string)
 }
 
 func (m *ModelArticle) DeleteTagByName(c *gin.Context, tagName string) error {
-	result := m.DB.WithContext(c).Where("name=?", tagName).Delete(&Tag{})
-	if result.RowsAffected == 0 {
+	tx := m.DB.Begin()
+	if tx.Error != nil {
+		return tx.Error
+	}
+	tag := &Tag{
+		Name: tagName,
+	}
+	err := tx.WithContext(c).Model(tag).Where("tag_name = ?", tagName).
+		Association("Articles").Clear()
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+	result := tx.WithContext(c).Where("name=?", tagName).Delete(&Tag{})
+	if result.Error != nil {
+		tx.Rollback()
 		return result.Error
 	}
-	return nil
+	return tx.Commit().Error
 }

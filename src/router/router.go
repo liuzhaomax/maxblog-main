@@ -17,8 +17,8 @@ func Register(root *gin.RouterGroup, handler *handler.HandlerArticle, mw *middle
 			routerArticle.Use(mw.Auth.ValidateToken())
 			routerArticle.PUT("/article", handler.PutArticleByID)
 			routerArticle.DELETE("/article", handler.DeleteArticleByID)
-			// routerArticle.PUT("/tag", handler.PutTagByName)
-			// routerArticle.DELETE("/tag", handler.DeleteTagByName)
+			routerArticle.PUT("/tag", handler.PutTagByName)
+			routerArticle.DELETE("/tag", handler.DeleteTagByName)
 		}
 	}
 }
