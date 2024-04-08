@@ -18,11 +18,14 @@ func (m *ModelArticle) QueryArticleList(c *gin.Context, list *[]Article, pageNo 
 	scope := func(db *gorm.DB) *gorm.DB {
 		return db.Offset(offset).Limit(pageSize)
 	}
-	query := m.DB.WithContext(c)
+	query := m.DB.WithContext(c).Scopes(scope)
 	if tagName != core.EmptyString {
-		query = query.Where("tags LIKE ?", "%"+tagName+"%")
+		query = query.
+			Joins("JOIN article_tag ON article.id = article_tag.article_id").
+			Joins("JOIN tag ON article_tag.tag_name = tag.name").
+			Where("tag.name = ?", tagName)
 	}
-	result := query.Scopes(scope).Find(list)
+	result := query.Preload("Tags").Find(list)
 	if result.RowsAffected == 0 {
 		return result.Error
 	}
@@ -38,7 +41,7 @@ func (m *ModelArticle) QueryTags(c *gin.Context, tags *[]Tag) error {
 }
 
 func (m *ModelArticle) QueryArticleByID(c *gin.Context, article *Article, articleId string) error {
-	result := m.DB.WithContext(c).Where("article_id=?", articleId).First(article)
+	result := m.DB.WithContext(c).Preload("Tags").Where("id=?", articleId).First(article)
 	if result.RowsAffected == 0 {
 		return result.Error
 	}
@@ -46,7 +49,7 @@ func (m *ModelArticle) QueryArticleByID(c *gin.Context, article *Article, articl
 }
 
 func (m *ModelArticle) CreateArticle(c *gin.Context, article *Article) error {
-	result := m.DB.WithContext(c).Create(article)
+	result := m.DB.WithContext(c).Preload("Tags").Create(article)
 	if result.RowsAffected == 0 {
 		return result.Error
 	}
@@ -54,19 +57,43 @@ func (m *ModelArticle) CreateArticle(c *gin.Context, article *Article) error {
 }
 
 func (m *ModelArticle) UpdateArticleByID(c *gin.Context, article *Article, articleId string) error {
-	result := m.DB.WithContext(c).Where("article_id=?", articleId).Updates(article)
-	if result.RowsAffected == 0 {
+	tx := m.DB.Begin()
+	if tx.Error != nil {
+		return tx.Error
+	}
+	result := tx.WithContext(c).Preload("Tags").Where("id=?", articleId).Updates(article)
+	if result.Error != nil {
+		tx.Rollback()
 		return result.Error
 	}
-	return nil
+	err := tx.WithContext(c).Model(article).Association("Tags").Replace(&article.Tags)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+	return tx.Commit().Error
 }
 
 func (m *ModelArticle) DeleteArticleByID(c *gin.Context, articleId string) error {
-	result := m.DB.WithContext(c).Where("article_id=?", articleId).Delete(&Article{})
-	if result.RowsAffected == 0 {
+	tx := m.DB.Begin()
+	if tx.Error != nil {
+		return tx.Error
+	}
+	article := &Article{
+		Id: articleId, // Clear函数必须指定主键
+	}
+	err := tx.WithContext(c).Model(article).Where("article_id = ?", articleId).
+		Association("Tags").Clear()
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+	result := tx.WithContext(c).Where("id=?", articleId).Delete(&Article{})
+	if result.Error != nil {
+		tx.Rollback()
 		return result.Error
 	}
-	return nil
+	return tx.Commit().Error
 }
 
 func (m *ModelArticle) QueryTagByName(c *gin.Context, tag *Tag, tagName string) error {

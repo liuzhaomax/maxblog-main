@@ -15,7 +15,7 @@ func TestAutoMigrate(t *testing.T) {
 			SingularTable: true,
 		},
 	})
-	err := db.AutoMigrate(&model.Article{}, &model.Tag{}, &model.ArticleTag{})
+	err := db.AutoMigrate(&model.Article{}, &model.Tag{})
 	if err != nil {
 		panic(err)
 	}

@@ -6,7 +6,7 @@ import (
 
 type Article struct {
 	gorm.Model
-	ArticleId string `gorm:"index:idx_article_id;unique;varchar(20);not null;"`
+	Id        string `gorm:"primarykey;index:idx_id;unique;varchar(20);not null;"`
 	Title     string `gorm:"index:idx_title;unique;varchar(150);not null;"`
 	Author    string `gorm:"varchar(30);not null;"`
 	Reference string `gorm:"varchar(300);"`
@@ -20,9 +20,4 @@ type Article struct {
 type Tag struct {
 	Name     string    `gorm:"primarykey;index:idx_name;unique;varchar(20);not null;"`
 	Articles []Article `gorm:"many2many:article_tag;"`
-}
-
-type ArticleTag struct {
-	ArticleId string // 如果使用Article中的ArticleId，应该用ArticleArticleId
-	TagName   string
 }

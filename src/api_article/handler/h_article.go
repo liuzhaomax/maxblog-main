@@ -61,21 +61,21 @@ func (h *HandlerArticle) DeleteArticleByID(c *gin.Context) {
 	h.Res.ResSuccess(c, "ok")
 }
 
-func (h *HandlerArticle) PutTagByName(c *gin.Context) {
-	err := h.Business.PutTagByName(c)
-	if err != nil {
-		h.Res.ResFailure(c, 500, core.Unknown, "更新标签失败", err)
-		return
-	}
-	h.Res.ResSuccess(c, "ok")
-
-}
-
-func (h *HandlerArticle) DeleteTagByName(c *gin.Context) {
-	err := h.Business.DeleteTagByName(c)
-	if err != nil {
-		h.Res.ResFailure(c, 500, core.Unknown, "删除标签失败", err)
-		return
-	}
-	h.Res.ResSuccess(c, "ok")
-}
+// func (h *HandlerArticle) PutTagByName(c *gin.Context) {
+// 	err := h.Business.PutTagByName(c)
+// 	if err != nil {
+// 		h.Res.ResFailure(c, 500, core.Unknown, "更新标签失败", err)
+// 		return
+// 	}
+// 	h.Res.ResSuccess(c, "ok")
+//
+// }
+//
+// func (h *HandlerArticle) DeleteTagByName(c *gin.Context) {
+// 	err := h.Business.DeleteTagByName(c)
+// 	if err != nil {
+// 		h.Res.ResFailure(c, 500, core.Unknown, "删除标签失败", err)
+// 		return
+// 	}
+// 	h.Res.ResSuccess(c, "ok")
+// }

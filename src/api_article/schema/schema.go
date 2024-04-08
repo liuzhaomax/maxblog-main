@@ -6,20 +6,20 @@ import (
 )
 
 type ArticleReq struct {
-	ArticleId string `json:"articleId"`
-	Title     string `json:"title"`
-	Author    string `json:"author"`
-	Reference string `json:"reference"`
-	Link      string `json:"link"`
-	View      uint   `json:"view"`
-	Like      uint   `json:"like"`
-	Content   string `json:"content"`
-	Tags      string `json:"tags"`
+	Id        string   `json:"id"`
+	Title     string   `json:"title"`
+	Author    string   `json:"author"`
+	Reference string   `json:"reference"`
+	Link      string   `json:"link"`
+	View      uint     `json:"view"`
+	Like      uint     `json:"like"`
+	Content   string   `json:"content"`
+	Tags      []string `json:"tags"`
 }
 
 func MapArticleReq2Article(articleReq *ArticleReq) *model.Article {
 	article := &model.Article{
-		ArticleId: articleReq.ArticleId,
+		Id:        articleReq.Id,
 		Title:     articleReq.Title,
 		Author:    articleReq.Author,
 		Reference: articleReq.Reference,
@@ -27,24 +27,29 @@ func MapArticleReq2Article(articleReq *ArticleReq) *model.Article {
 		View:      articleReq.View,
 		Like:      articleReq.Like,
 		Content:   articleReq.Content,
-		Tags:      articleReq.Tags,
+		Tags:      []model.Tag{},
+	}
+	for _, tag := range articleReq.Tags {
+		article.Tags = append(article.Tags, model.Tag{
+			Name: tag,
+		})
 	}
 	return article
 }
 
 type ArticleRes struct {
-	ArticleId string `json:"articleId"`
-	CreatedAt string `json:"createdAt"`
-	UpdatedAt string `json:"updatedAt"`
-	DeletedAt string `json:"deletedAt"`
-	Title     string `json:"title"`
-	Author    string `json:"author"`
-	Reference string `json:"reference"`
-	Link      string `json:"link"`
-	View      uint   `json:"view"`
-	Like      uint   `json:"like"`
-	Content   string `json:"content"`
-	Tags      string `json:"tags"`
+	Id        string   `json:"id"`
+	CreatedAt string   `json:"createdAt"`
+	UpdatedAt string   `json:"updatedAt"`
+	DeletedAt string   `json:"deletedAt"`
+	Title     string   `json:"title"`
+	Author    string   `json:"author"`
+	Reference string   `json:"reference"`
+	Link      string   `json:"link"`
+	View      uint     `json:"view"`
+	Like      uint     `json:"like"`
+	Content   string   `json:"content"`
+	Tags      []string `json:"tags"`
 }
 
 func MapArticle2ArticleRes(article *model.Article) *ArticleRes {
@@ -52,8 +57,12 @@ func MapArticle2ArticleRes(article *model.Article) *ArticleRes {
 	if article.DeletedAt.Valid {
 		deletedAt = article.DeletedAt.Time.String()
 	}
+	tagNames := []string{}
+	for _, tag := range article.Tags {
+		tagNames = append(tagNames, tag.Name)
+	}
 	return &ArticleRes{
-		ArticleId: article.ArticleId,
+		Id:        article.Id,
 		CreatedAt: article.CreatedAt.String(),
 		UpdatedAt: article.UpdatedAt.String(),
 		DeletedAt: deletedAt,
@@ -64,7 +73,7 @@ func MapArticle2ArticleRes(article *model.Article) *ArticleRes {
 		View:      article.View,
 		Like:      article.Like,
 		Content:   article.Content,
-		Tags:      article.Tags,
+		Tags:      tagNames,
 	}
 }
 
@@ -76,45 +85,16 @@ func MakeListRes(list *[]model.Article) *[]ArticleRes {
 	return &listRes
 }
 
-type TagReq struct {
-	Name       string `json:"name"`
-	ArticleIds string `json:"articleIds"`
+// Tag
+
+func MapTag2TagRes(tag *model.Tag) string {
+	return tag.Name
 }
 
-func MapTagReq2Tag(tagReq *TagReq) *model.Tag {
-	tag := &model.Tag{
-		Name:       tagReq.Name,
-		ArticleIds: tagReq.ArticleIds,
-	}
-	return tag
-}
-
-type TagRes struct {
-	CreatedAt  string `json:"createdAt"`
-	UpdatedAt  string `json:"updatedAt"`
-	DeletedAt  string `json:"deletedAt"`
-	Name       string `json:"name"`
-	ArticleIds string `json:"articleIds"`
-}
-
-func MapTag2TagRes(tag *model.Tag) *TagRes {
-	deletedAt := core.EmptyString
-	if tag.DeletedAt.Valid {
-		deletedAt = tag.DeletedAt.Time.String()
-	}
-	return &TagRes{
-		CreatedAt:  tag.CreatedAt.String(),
-		UpdatedAt:  tag.UpdatedAt.String(),
-		DeletedAt:  deletedAt,
-		Name:       tag.Name,
-		ArticleIds: tag.ArticleIds,
-	}
-}
-
-func MakeTagsRes(tags *[]model.Tag) *[]TagRes {
-	tagsRes := []TagRes{}
+func MakeTagsRes(tags *[]model.Tag) *[]string {
+	tagsRes := []string{}
 	for _, tag := range *tags {
-		tagsRes = append(tagsRes, *MapTag2TagRes(&tag))
+		tagsRes = append(tagsRes, MapTag2TagRes(&tag))
 	}
 	return &tagsRes
 }

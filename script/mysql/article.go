@@ -7,9 +7,9 @@ import (
 )
 
 func createArticle(db *gorm.DB) {
-	articleIds := []string{"JC23dJhf3bMNZZZCYLjGBk", "BNmQim6bueJ7WQJf9pnCo4", "n2aZ9oHrHDANtJw8ASVdmh"}
+	Ids := []string{"JC23dJhf3bMNZZZCYLjGBk", "BNmQim6bueJ7WQJf9pnCo4", "n2aZ9oHrHDANtJw8ASVdmh"}
 	article0 := &model.Article{
-		ArticleId: articleIds[0],
+		Id:        Ids[0],
 		Title:     fmt.Sprintf("标题-%d", 0),
 		Author:    "老马",
 		Reference: "引用自我也不知道哪",
@@ -28,7 +28,7 @@ func createArticle(db *gorm.DB) {
 	}
 	db.Create(article0)
 	article1 := &model.Article{
-		ArticleId: articleIds[1],
+		Id:        Ids[1],
 		Title:     fmt.Sprintf("标题-%d", 1),
 		Author:    "老马",
 		Reference: "引用自我也不知道哪",
@@ -44,7 +44,7 @@ func createArticle(db *gorm.DB) {
 	}
 	db.Create(article1)
 	article2 := &model.Article{
-		ArticleId: articleIds[2],
+		Id:        Ids[2],
 		Title:     fmt.Sprintf("标题-%d", 2),
 		Author:    "老马",
 		Reference: "引用自我也不知道哪",
@@ -59,7 +59,7 @@ func createArticle(db *gorm.DB) {
 
 func createAgain(db *gorm.DB) {
 	article := &model.Article{
-		ArticleId: "ooooooooo",
+		Id:        "ooooooooo",
 		Title:     fmt.Sprintf("标题-%d", 3),
 		Author:    "老马",
 		Reference: "引用自我也不知道哪",
