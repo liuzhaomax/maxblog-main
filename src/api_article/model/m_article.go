@@ -3,6 +3,7 @@ package model
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/wire"
+	"github.com/liuzhaomax/maxblog-main/internal/core"
 	"gorm.io/gorm"
 )
 
@@ -18,7 +19,15 @@ func (m *ModelArticle) QueryArticleList(c *gin.Context, list *[]Article, pageNo 
 		return db.Offset(offset).Limit(pageSize)
 	}
 	query := m.DB.WithContext(c).Scopes(scope)
-	if len(tagNames) > 0 {
+	// tagNames元素不全为空字符串
+	var isAllEmptyStringElem bool
+	for _, tag := range tagNames {
+		if tag != core.EmptyString {
+			isAllEmptyStringElem = true
+			break
+		}
+	}
+	if len(tagNames) > 0 && isAllEmptyStringElem {
 		query = query.
 			Select("DISTINCT article.*").
 			Joins("JOIN article_tag ON article.id = article_tag.article_id").
