@@ -230,7 +230,7 @@ components:
           cover: string
           content: string
           tags:
-            - tagName: string
+            - string
       properties:
         createdAt:
           type: string
@@ -262,9 +262,7 @@ components:
         content:
           type: string
         tags:
-          type: array
-          items:
-            $ref: '#/components/schemas/Tag'
+          $ref: '#/components/schemas/Tag'
       required:
         - createdAt
         - updatedAt
@@ -274,16 +272,13 @@ components:
         - view
         - like
     Tag:
-      type: object
+      type: array
       x-examples:
         Example 1:
           tagName: string
       description: 标签
-      properties:
-        tagName:
-          type: string
-      required:
-        - tagName
+      items:
+        type: string
   responses:
     '200':
       description: Example response
@@ -374,7 +369,7 @@ components:
                     cover: string
                     content: string
                     tags:
-                      - tagName: string
+                      - string
     200-get-tags:
       description: 获取标签列表
       content:
@@ -385,9 +380,7 @@ components:
               status:
                 $ref: '#/components/schemas/Status'
               data:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Tag'
+                $ref: '#/components/schemas/Tag'
           examples:
             Example 1:
               value:
@@ -395,7 +388,7 @@ components:
                   code: 0
                   desc: string
                 data:
-                  - tagName: string
+                  - string
     200-get-article-by-id:
       description: Example response
       content:
@@ -427,7 +420,7 @@ components:
                   cover: string
                   content: string
                   tags:
-                    - tagName: string
+                    - string
   parameters:
     Client_ip:
       name: Client_ip
@@ -546,9 +539,7 @@ components:
               content:
                 type: string
               tags:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Tag'
+                $ref: '#/components/schemas/Tag'
             required:
               - id
               - title
@@ -568,5 +559,5 @@ components:
                 cover: string
                 content: string
                 tags:
-                  - tagName: string
+                  - string
       description: article请求体
