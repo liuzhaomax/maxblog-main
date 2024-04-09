@@ -217,11 +217,10 @@ components:
       description: 文章
       x-examples:
         Example 1:
-          id: string
           createdAt: '2019-08-24T14:15:22Z'
           updatedAt: '2019-08-24T14:15:22Z'
           deletedAt: '2019-08-24T14:15:22Z'
-          articleId: string
+          id: string
           title: string
           author: string
           reference: string
@@ -233,8 +232,6 @@ components:
           tags:
             - tagName: string
       properties:
-        id:
-          type: string
         createdAt:
           type: string
           format: date-time
@@ -244,7 +241,7 @@ components:
         deletedAt:
           type: string
           format: date-time
-        articleId:
+        id:
           type: string
         title:
           type: string
@@ -269,10 +266,9 @@ components:
           items:
             $ref: '#/components/schemas/Tag'
       required:
-        - id
         - createdAt
         - updatedAt
-        - articleId
+        - id
         - title
         - author
         - view
@@ -365,11 +361,10 @@ components:
                   code: 0
                   desc: string
                 data:
-                  - id: string
-                    createdAt: '2019-08-24T14:15:22Z'
+                  - createdAt: '2019-08-24T14:15:22Z'
                     updatedAt: '2019-08-24T14:15:22Z'
                     deletedAt: '2019-08-24T14:15:22Z'
-                    articleId: string
+                    id: string
                     title: string
                     author: string
                     reference: string
@@ -419,11 +414,10 @@ components:
                   code: 0
                   desc: string
                 data:
-                  id: string
                   createdAt: '2019-08-24T14:15:22Z'
                   updatedAt: '2019-08-24T14:15:22Z'
                   deletedAt: '2019-08-24T14:15:22Z'
-                  articleId: string
+                  id: string
                   title: string
                   author: string
                   reference: string
