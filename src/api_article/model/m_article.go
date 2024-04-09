@@ -23,7 +23,7 @@ func (m *ModelArticle) QueryArticleList(c *gin.Context, list *[]Article, pageNo 
 			Select("DISTINCT article.*").
 			Joins("JOIN article_tag ON article.id = article_tag.article_id").
 			Joins("JOIN tag ON article_tag.tag_name = tag.name").
-			Where("tag.name IN (?)", tagNames)
+			Where("tag.name IN ?", tagNames)
 	}
 	result := query.Preload("Tags").Find(list)
 	if result.RowsAffected == 0 {
