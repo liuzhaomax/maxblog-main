@@ -21,7 +21,7 @@ func Paginate(pageNoReq string, pageSizeReq string) (int, int, error) {
 		pageNoReq = "1"
 	}
 	if pageSizeReq == core.EmptyString {
-		pageSizeReq = "10"
+		pageSizeReq = "5"
 	}
 	pageNo, err := strconv.Atoi(pageNoReq)
 	if err != nil {
