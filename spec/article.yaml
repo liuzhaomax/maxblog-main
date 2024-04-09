@@ -48,7 +48,7 @@ paths:
     get:
       summary: Get Article by ID
       tags:
-        - tag
+        - article
       responses:
         '200':
           $ref: '#/components/responses/200-get-article-by-id'
@@ -217,6 +217,7 @@ components:
       description: 文章
       x-examples:
         Example 1:
+          id: string
           createdAt: '2019-08-24T14:15:22Z'
           updatedAt: '2019-08-24T14:15:22Z'
           deletedAt: '2019-08-24T14:15:22Z'
@@ -227,11 +228,13 @@ components:
           link: string
           view: 0
           like: 0
+          cover: string
           content: string
           tags:
             - tagName: string
-              articleId: string
       properties:
+        id:
+          type: string
         createdAt:
           type: string
           format: date-time
@@ -257,6 +260,8 @@ components:
         like:
           type: integer
           default: 0
+        cover:
+          type: string
         content:
           type: string
         tags:
@@ -264,6 +269,7 @@ components:
           items:
             $ref: '#/components/schemas/Tag'
       required:
+        - id
         - createdAt
         - updatedAt
         - articleId
@@ -276,12 +282,9 @@ components:
       x-examples:
         Example 1:
           tagName: string
-          articleId: string
       description: 标签
       properties:
         tagName:
-          type: string
-        articleId:
           type: string
       required:
         - tagName
@@ -362,7 +365,8 @@ components:
                   code: 0
                   desc: string
                 data:
-                  - createdAt: '2019-08-24T14:15:22Z'
+                  - id: string
+                    createdAt: '2019-08-24T14:15:22Z'
                     updatedAt: '2019-08-24T14:15:22Z'
                     deletedAt: '2019-08-24T14:15:22Z'
                     articleId: string
@@ -372,13 +376,10 @@ components:
                     link: string
                     view: 0
                     like: 0
+                    cover: string
                     content: string
                     tags:
-                      - createdAt: '2019-08-24T14:15:22Z'
-                        updatedAt: '2019-08-24T14:15:22Z'
-                        deletedAt: '2019-08-24T14:15:22Z'
-                        tagName: string
-                        articleIds: string
+                      - tagName: string
     200-get-tags:
       description: 获取标签列表
       content:
@@ -400,7 +401,6 @@ components:
                   desc: string
                 data:
                   - tagName: string
-                    articleId: string
     200-get-article-by-id:
       description: Example response
       content:
@@ -419,6 +419,7 @@ components:
                   code: 0
                   desc: string
                 data:
+                  id: string
                   createdAt: '2019-08-24T14:15:22Z'
                   updatedAt: '2019-08-24T14:15:22Z'
                   deletedAt: '2019-08-24T14:15:22Z'
@@ -429,7 +430,10 @@ components:
                   link: string
                   view: 0
                   like: 0
+                  cover: string
                   content: string
+                  tags:
+                    - tagName: string
   parameters:
     Client_ip:
       name: Client_ip
@@ -529,7 +533,7 @@ components:
           schema:
             type: object
             properties:
-              articleId:
+              id:
                 type: string
               title:
                 type: string
@@ -543,6 +547,8 @@ components:
                 type: integer
               like:
                 type: integer
+              cover:
+                type: string
               content:
                 type: string
               tags:
@@ -550,7 +556,7 @@ components:
                 items:
                   $ref: '#/components/schemas/Tag'
             required:
-              - articleId
+              - id
               - title
               - author
               - view
@@ -558,15 +564,15 @@ components:
           examples:
             Example 1:
               value:
-                articleId: string
+                id: string
                 title: string
                 author: string
                 reference: string
                 link: string
                 view: 0
                 like: 0
+                cover: string
                 content: string
                 tags:
                   - tagName: string
-                    articleId: string
       description: article请求体
