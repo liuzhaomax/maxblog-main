@@ -11,6 +11,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/redis/go-redis/v9"
 	"gorm.io/gorm"
+	"strings"
 )
 
 var BusinessArticleSet = wire.NewSet(wire.Struct(new(BusinessArticle), "*"))
@@ -28,9 +29,10 @@ func (b *BusinessArticle) GetArticleList(c *gin.Context) (*[]schema.ArticleRes, 
 	if err != nil {
 		return nil, core.FormatError(core.ParseIssue, "Query字段解析错误", err)
 	}
-	tagName := c.Query(utils.TagNameQueryParamName)
+	tagNamesStr := c.Query(utils.TagNameQueryParamName)
+	tagNames := strings.Split(tagNamesStr, ",")
 	list := &[]model.Article{}
-	err = b.Model.QueryArticleList(c, list, pageNo, pageSize, tagName)
+	err = b.Model.QueryArticleList(c, list, pageNo, pageSize, tagNames)
 	if err != nil {
 		return nil, core.FormatError(core.DBDenied, "DB查询文章列表失败", err)
 	}

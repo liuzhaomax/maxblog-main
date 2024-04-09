@@ -3,7 +3,6 @@ package model
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/wire"
-	"github.com/liuzhaomax/maxblog-main/internal/core"
 	"gorm.io/gorm"
 )
 
@@ -13,17 +12,18 @@ type ModelArticle struct {
 	DB *gorm.DB
 }
 
-func (m *ModelArticle) QueryArticleList(c *gin.Context, list *[]Article, pageNo int, pageSize int, tagName string) error {
+func (m *ModelArticle) QueryArticleList(c *gin.Context, list *[]Article, pageNo int, pageSize int, tagNames []string) error {
 	offset := (pageNo - 1) * pageSize
 	scope := func(db *gorm.DB) *gorm.DB {
 		return db.Offset(offset).Limit(pageSize)
 	}
 	query := m.DB.WithContext(c).Scopes(scope)
-	if tagName != core.EmptyString {
+	if len(tagNames) > 0 {
 		query = query.
+			Select("DISTINCT article.*").
 			Joins("JOIN article_tag ON article.id = article_tag.article_id").
 			Joins("JOIN tag ON article_tag.tag_name = tag.name").
-			Where("tag.name = ?", tagName)
+			Where("tag.name IN (?)", tagNames)
 	}
 	result := query.Preload("Tags").Find(list)
 	if result.RowsAffected == 0 {
