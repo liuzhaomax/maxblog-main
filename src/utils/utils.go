@@ -36,7 +36,7 @@ func Paginate(pageNoReq string, pageSizeReq string) (int, int, error) {
 	}
 	switch {
 	case pageSize <= 0:
-		pageSize = 10
+		pageSize = 5
 	case pageSize >= 30:
 		pageSize = 30
 	}
