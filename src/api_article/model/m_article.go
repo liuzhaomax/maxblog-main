@@ -1,6 +1,7 @@
 package model
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/google/wire"
 	"github.com/liuzhaomax/maxblog-main/internal/core"
@@ -13,7 +14,7 @@ type ModelArticle struct {
 	DB *gorm.DB
 }
 
-func (m *ModelArticle) QueryArticleList(c *gin.Context, list *[]Article, pageNo int, pageSize int, tagNames []string) error {
+func (m *ModelArticle) QueryArticleList(c *gin.Context, list *[]Article, pageNo int, pageSize int, tagNames []string, search string) error {
 	offset := (pageNo - 1) * pageSize
 	scope := func(db *gorm.DB) *gorm.DB {
 		return db.Offset(offset).Limit(pageSize)
@@ -33,6 +34,10 @@ func (m *ModelArticle) QueryArticleList(c *gin.Context, list *[]Article, pageNo 
 			Joins("JOIN article_tag ON article.id = article_tag.article_id").
 			Joins("JOIN tag ON article_tag.tag_name = tag.name").
 			Where("tag.name IN ?", tagNames)
+	}
+	if search != core.EmptyString {
+		searchCond := fmt.Sprintf("%%%s%%", search)
+		query = query.Where("article.title LIKE ? OR article.content LIKE ?", searchCond, searchCond)
 	}
 	result := query.Preload("Tags").Find(list)
 	if result.RowsAffected == 0 {

@@ -31,8 +31,9 @@ func (b *BusinessArticle) GetArticleList(c *gin.Context) (*[]schema.ArticleRes, 
 	}
 	tagNamesStr := c.Query(utils.TagNameQueryParamName)
 	tagNames := strings.Split(tagNamesStr, ",")
+	search := c.Query(utils.SearchQueryParamName)
 	list := &[]model.Article{}
-	err = b.Model.QueryArticleList(c, list, pageNo, pageSize, tagNames)
+	err = b.Model.QueryArticleList(c, list, pageNo, pageSize, tagNames, search)
 	if err != nil {
 		return nil, core.FormatError(core.DBDenied, "DB查询文章列表失败", err)
 	}
