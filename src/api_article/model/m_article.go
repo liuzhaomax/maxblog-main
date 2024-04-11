@@ -41,7 +41,7 @@ func (m *ModelArticle) QueryArticleList(c *gin.Context, list *[]Article, pageNo 
 		searchCond := fmt.Sprintf("%%%s%%", search)
 		query = query.Where("article.title LIKE ? OR article.content LIKE ?", searchCond, searchCond)
 	}
-	query = query.Order("article.updated_at DESC")
+	query = query.Order("article.created_at DESC")
 	result := query.Preload("Tags").Find(list)
 	if result.RowsAffected == 0 {
 		return result.Error
