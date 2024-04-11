@@ -55,9 +55,19 @@ func (b *BusinessArticle) GetArticleTags(c *gin.Context) (*[]string, error) {
 func (b *BusinessArticle) GetArticleByID(c *gin.Context) (*schema.ArticleRes, error) {
 	idReq := c.Query(utils.ArticleIdQueryParamName)
 	article := &model.Article{}
-	err := b.Model.QueryArticleByID(c, article, idReq)
+	err := b.Tx.ExecTrans(c, func(ctx context.Context) error {
+		err := b.Model.QueryArticleByID(ctx, article, idReq)
+		if err != nil {
+			return core.FormatError(core.DBDenied, "DB查询文章失败", err)
+		}
+		err = b.Model.UpdateArticleViewByID(ctx, article)
+		if err != nil {
+			return core.FormatError(core.DBDenied, "DB更新阅读量失败", err)
+		}
+		return nil
+	})
 	if err != nil {
-		return nil, core.FormatError(core.DBDenied, "DB查询文章失败", err)
+		return nil, core.FormatError(core.DBDenied, "DB事务失败", err)
 	}
 	articleRes := schema.MapArticle2ArticleRes(article)
 	return articleRes, nil
@@ -75,18 +85,18 @@ func (b *BusinessArticle) PutArticleByID(c *gin.Context) error {
 	}
 	article := &model.Article{}
 	err = b.Tx.ExecTrans(c, func(ctx context.Context) error {
-		err := b.Model.QueryArticleByID(c, article, articleReq.Id)
+		err := b.Model.QueryArticleByID(ctx, article, articleReq.Id)
 		if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
 			return core.FormatError(core.DBDenied, "DB查询文章失败", err)
 		}
 		article = schema.MapArticleReq2Article(articleReq)
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			err = b.Model.CreateArticle(c, article)
+			err = b.Model.CreateArticle(ctx, article)
 			if err != nil {
 				return core.FormatError(core.DBDenied, "DB创建文章失败", err)
 			}
 		} else {
-			err = b.Model.UpdateArticleByID(c, article, articleReq.Id)
+			err = b.Model.UpdateArticleByID(ctx, article, articleReq.Id)
 			if err != nil {
 				return core.FormatError(core.DBDenied, "DB更新文章失败", err)
 			}
@@ -103,11 +113,11 @@ func (b *BusinessArticle) DeleteArticleByID(c *gin.Context) error {
 	idReq := c.Query(utils.ArticleIdQueryParamName)
 	article := &model.Article{}
 	err := b.Tx.ExecTrans(c, func(ctx context.Context) error {
-		err := b.Model.QueryArticleByID(c, article, idReq)
+		err := b.Model.QueryArticleByID(ctx, article, idReq)
 		if err != nil {
 			return core.FormatError(core.DBDenied, "DB查询文章失败", err)
 		}
-		err = b.Model.DeleteArticleByID(c, idReq)
+		err = b.Model.DeleteArticleByID(ctx, idReq)
 		if err != nil {
 			return core.FormatError(core.DBDenied, "DB删除文章失败", err)
 		}
@@ -125,17 +135,17 @@ func (b *BusinessArticle) PutTagByName(c *gin.Context) error {
 		Name: tagNameReq,
 	}
 	err := b.Tx.ExecTrans(c, func(ctx context.Context) error {
-		err := b.Model.QueryTagByName(c, tag, tagNameReq)
+		err := b.Model.QueryTagByName(ctx, tag, tagNameReq)
 		if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
 			return core.FormatError(core.DBDenied, "DB查询标签失败", err)
 		}
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			err = b.Model.CreateTag(c, tag)
+			err = b.Model.CreateTag(ctx, tag)
 			if err != nil {
 				return core.FormatError(core.DBDenied, "DB创建标签失败", err)
 			}
 		} else {
-			err = b.Model.UpdateTagByName(c, tag, tagNameReq)
+			err = b.Model.UpdateTagByName(ctx, tag, tagNameReq)
 			if err != nil {
 				return core.FormatError(core.DBDenied, "DB更新标签失败", err)
 			}
@@ -154,11 +164,11 @@ func (b *BusinessArticle) DeleteTagByName(c *gin.Context) error {
 		Name: tagNameReq,
 	}
 	err := b.Tx.ExecTrans(c, func(ctx context.Context) error {
-		err := b.Model.QueryTagByName(c, tag, tagNameReq)
+		err := b.Model.QueryTagByName(ctx, tag, tagNameReq)
 		if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
 			return core.FormatError(core.DBDenied, "DB查询标签失败", err)
 		}
-		err = b.Model.DeleteTagByName(c, tagNameReq)
+		err = b.Model.DeleteTagByName(ctx, tagNameReq)
 		if err != nil {
 			return core.FormatError(core.DBDenied, "DB删除标签失败", err)
 		}

@@ -1,11 +1,13 @@
 package model
 
 import (
+	"context"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/google/wire"
 	"github.com/liuzhaomax/maxblog-main/internal/core"
 	"gorm.io/gorm"
+	"sync/atomic"
 )
 
 var ModelArticleSet = wire.NewSet(wire.Struct(new(ModelArticle), "*"))
@@ -55,104 +57,133 @@ func (m *ModelArticle) QueryTags(c *gin.Context, tags *[]Tag) error {
 	return nil
 }
 
-func (m *ModelArticle) QueryArticleByID(c *gin.Context, article *Article, articleId string) error {
-	result := m.DB.WithContext(c).Preload("Tags").Where("id=?", articleId).First(article)
+func (m *ModelArticle) QueryArticleByID(ctx context.Context, article *Article, articleId string) error {
+	tx := ctx.Value(core.Trans{}).(*gorm.DB)
+	result := tx.WithContext(ctx).
+		Set("gorm:query_option", "FOR UPDATE").
+		Preload("Tags").
+		Where("id=?", articleId).
+		First(article)
 	if result.RowsAffected == 0 {
 		return result.Error
 	}
 	return nil
 }
 
-func (m *ModelArticle) CreateArticle(c *gin.Context, article *Article) error {
-	result := m.DB.WithContext(c).Preload("Tags").Create(article)
+func (m *ModelArticle) UpdateArticleViewByID(ctx context.Context, article *Article) error {
+	tx := ctx.Value(core.Trans{}).(*gorm.DB)
+	view := uint32(article.View)
+	atomic.AddUint32(&view, 1)
+	result := tx.WithContext(ctx).Model(article).
+		Set("gorm:query_option", "FOR UPDATE").
+		Update("view", atomic.LoadUint32(&view))
 	if result.RowsAffected == 0 {
 		return result.Error
 	}
 	return nil
 }
 
-func (m *ModelArticle) UpdateArticleByID(c *gin.Context, article *Article, articleId string) error {
-	tx := m.DB.Begin()
-	if tx.Error != nil {
-		return tx.Error
+func (m *ModelArticle) CreateArticle(ctx context.Context, article *Article) error {
+	tx := ctx.Value(core.Trans{}).(*gorm.DB)
+	result := tx.WithContext(ctx).Preload("Tags").Create(article)
+	if result.RowsAffected == 0 {
+		return result.Error
 	}
-	result := tx.WithContext(c).Preload("Tags").Where("id=?", articleId).Updates(article)
+	return nil
+}
+
+func (m *ModelArticle) UpdateArticleByID(ctx context.Context, article *Article, articleId string) error {
+	tx := ctx.Value(core.Trans{}).(*gorm.DB)
+	result := tx.WithContext(ctx).
+		Set("gorm:query_option", "FOR UPDATE").
+		Preload("Tags").
+		Where("id=?", articleId).
+		Updates(article)
 	if result.Error != nil {
-		tx.Rollback()
 		return result.Error
 	}
-	err := tx.WithContext(c).Model(article).Association("Tags").Replace(&article.Tags)
+	err := tx.WithContext(ctx).Model(article).
+		Set("gorm:query_option", "FOR UPDATE").
+		Association("Tags").
+		Replace(&article.Tags)
 	if err != nil {
-		tx.Rollback()
 		return err
 	}
-	return tx.Commit().Error
+	return nil
 }
 
-func (m *ModelArticle) DeleteArticleByID(c *gin.Context, articleId string) error {
-	tx := m.DB.Begin()
-	if tx.Error != nil {
-		return tx.Error
-	}
+func (m *ModelArticle) DeleteArticleByID(ctx context.Context, articleId string) error {
+	tx := ctx.Value(core.Trans{}).(*gorm.DB)
 	article := &Article{
 		Id: articleId, // Clear函数必须指定主键
 	}
-	err := tx.WithContext(c).Model(article).Where("article_id = ?", articleId).
-		Association("Tags").Clear()
+	err := tx.WithContext(ctx).Model(article).
+		Set("gorm:query_option", "FOR UPDATE").
+		Where("article_id = ?", articleId).
+		Association("Tags").
+		Clear()
 	if err != nil {
-		tx.Rollback()
 		return err
 	}
-	result := tx.WithContext(c).Where("id=?", articleId).Delete(&Article{})
+	result := tx.WithContext(ctx).Where("id=?", articleId).Delete(&Article{})
 	if result.Error != nil {
-		tx.Rollback()
 		return result.Error
 	}
-	return tx.Commit().Error
+	return nil
 }
 
-func (m *ModelArticle) QueryTagByName(c *gin.Context, tag *Tag, tagName string) error {
-	result := m.DB.WithContext(c).Where("name=?", tagName).First(tag)
+func (m *ModelArticle) QueryTagByName(ctx context.Context, tag *Tag, tagName string) error {
+	tx := ctx.Value(core.Trans{}).(*gorm.DB)
+	result := tx.WithContext(ctx).
+		Set("gorm:query_option", "FOR UPDATE").
+		Where("name=?", tagName).
+		First(tag)
 	if result.RowsAffected == 0 {
 		return result.Error
 	}
 	return nil
 }
 
-func (m *ModelArticle) CreateTag(c *gin.Context, tag *Tag) error {
-	result := m.DB.WithContext(c).Create(tag)
+func (m *ModelArticle) CreateTag(ctx context.Context, tag *Tag) error {
+	tx := ctx.Value(core.Trans{}).(*gorm.DB)
+	result := tx.WithContext(ctx).Create(tag)
 	if result.RowsAffected == 0 {
 		return result.Error
 	}
 	return nil
 }
 
-func (m *ModelArticle) UpdateTagByName(c *gin.Context, tag *Tag, tagName string) error {
-	result := m.DB.WithContext(c).Where("name=?", tagName).Updates(tag)
+func (m *ModelArticle) UpdateTagByName(ctx context.Context, tag *Tag, tagName string) error {
+	tx := ctx.Value(core.Trans{}).(*gorm.DB)
+	result := tx.WithContext(ctx).
+		Set("gorm:query_option", "FOR UPDATE").
+		Where("name=?", tagName).
+		Updates(tag)
 	if result.RowsAffected == 0 {
 		return result.Error
 	}
 	return nil
 }
 
-func (m *ModelArticle) DeleteTagByName(c *gin.Context, tagName string) error {
-	tx := m.DB.Begin()
-	if tx.Error != nil {
-		return tx.Error
-	}
+func (m *ModelArticle) DeleteTagByName(ctx context.Context, tagName string) error {
+	tx := ctx.Value(core.Trans{}).(*gorm.DB)
 	tag := &Tag{
 		Name: tagName,
 	}
-	err := tx.WithContext(c).Model(tag).Where("tag_name = ?", tagName).
-		Association("Articles").Clear()
+	err := tx.WithContext(ctx).Model(tag).
+		Set("gorm:query_option", "FOR UPDATE").
+		Where("tag_name = ?", tagName).
+		Association("Articles").
+		Clear()
 	if err != nil {
-		tx.Rollback()
 		return err
 	}
-	result := tx.WithContext(c).Where("name=?", tagName).Delete(&Tag{})
+	result := tx.WithContext(ctx).
+		Set("gorm:query_option", "FOR UPDATE").
+		Where("name=?", tagName).
+		Delete(&Tag{})
 	if result.Error != nil {
-		tx.Rollback()
 		return result.Error
 	}
-	return tx.Commit().Error
+	return nil
 }
