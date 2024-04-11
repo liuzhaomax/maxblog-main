@@ -121,6 +121,30 @@ paths:
         - $ref: '#/components/parameters/Authorization'
         - $ref: '#/components/parameters/articleId'
         - $ref: '#/components/parameters/User_id'
+    patch:
+      summary: Patch View and Like
+      tags:
+        - article
+      operationId: patch-maxblog-article-article
+      responses:
+        '200':
+          $ref: '#/components/responses/200'
+        '400':
+          $ref: '#/components/responses/400'
+        '500':
+          $ref: '#/components/responses/500'
+      description: 更新阅读量和点赞数
+      parameters:
+        - $ref: '#/components/parameters/Client_ip'
+        - $ref: '#/components/parameters/User-Agent'
+        - $ref: '#/components/parameters/Trace_id'
+        - $ref: '#/components/parameters/Span_id'
+        - $ref: '#/components/parameters/Parent_id'
+        - $ref: '#/components/parameters/App_id'
+        - $ref: '#/components/parameters/Request_id'
+        - $ref: '#/components/parameters/articleId'
+        - $ref: '#/components/parameters/User_id'
+        - $ref: '#/components/parameters/like'
   /maxblog/article/tag:
     parameters: []
     put:
@@ -521,6 +545,13 @@ components:
       schema:
         type: string
       description: 搜索字符串
+    like:
+      name: like
+      in: query
+      required: false
+      schema:
+        type: boolean
+      description: 点赞
   requestBodies:
     Article:
       content:
