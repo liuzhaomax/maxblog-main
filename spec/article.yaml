@@ -144,7 +144,7 @@ paths:
         - $ref: '#/components/parameters/Request_id'
         - $ref: '#/components/parameters/articleId'
         - $ref: '#/components/parameters/User_id'
-        - $ref: '#/components/parameters/like'
+        - $ref: '#/components/parameters/field'
   /maxblog/article/tag:
     parameters: []
     put:
@@ -545,13 +545,13 @@ components:
       schema:
         type: string
       description: 搜索字符串
-    like:
-      name: like
+    field:
+      name: field
       in: query
       required: false
       schema:
-        type: boolean
-      description: 点赞
+        type: string
+      description: 字段名
   requestBodies:
     Article:
       content:
