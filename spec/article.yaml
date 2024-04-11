@@ -122,7 +122,7 @@ paths:
         - $ref: '#/components/parameters/articleId'
         - $ref: '#/components/parameters/User_id'
     patch:
-      summary: Patch View and Like
+      summary: Patch Like
       tags:
         - article
       operationId: patch-maxblog-article-article
@@ -133,7 +133,7 @@ paths:
           $ref: '#/components/responses/400'
         '500':
           $ref: '#/components/responses/500'
-      description: 更新阅读量和点赞数
+      description: 更新点赞数
       parameters:
         - $ref: '#/components/parameters/Client_ip'
         - $ref: '#/components/parameters/User-Agent'
