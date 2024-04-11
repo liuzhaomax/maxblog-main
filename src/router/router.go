@@ -14,6 +14,7 @@ func Register(root *gin.RouterGroup, handler *handler.HandlerArticle, mw *middle
 			routerArticle.GET("/list", handler.GetArticleList)
 			routerArticle.GET("/tags", handler.GetArticleTags)
 			routerArticle.GET("/article", handler.GetArticleByID)
+			routerArticle.PATCH("/article", handler.PatchArticleLikeByID)
 			routerArticle.Use(mw.Auth.ValidateToken())
 			routerArticle.PUT("/article", handler.PutArticleByID)
 			routerArticle.DELETE("/article", handler.DeleteArticleByID)

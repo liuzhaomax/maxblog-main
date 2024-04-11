@@ -83,6 +83,19 @@ func (m *ModelArticle) UpdateArticleViewByID(ctx context.Context, article *Artic
 	return nil
 }
 
+func (m *ModelArticle) UpdateArticleLikeByID(ctx context.Context, article *Article) error {
+	tx := ctx.Value(core.Trans{}).(*gorm.DB)
+	like := uint32(article.Like)
+	atomic.AddUint32(&like, 1)
+	result := tx.WithContext(ctx).Model(article).
+		Set("gorm:query_option", "FOR UPDATE").
+		Update("like", atomic.LoadUint32(&like))
+	if result.RowsAffected == 0 {
+		return result.Error
+	}
+	return nil
+}
+
 func (m *ModelArticle) CreateArticle(ctx context.Context, article *Article) error {
 	tx := ctx.Value(core.Trans{}).(*gorm.DB)
 	result := tx.WithContext(ctx).Preload("Tags").Create(article)

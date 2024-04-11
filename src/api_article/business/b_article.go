@@ -73,6 +73,30 @@ func (b *BusinessArticle) GetArticleByID(c *gin.Context) (*schema.ArticleRes, er
 	return articleRes, nil
 }
 
+func (b *BusinessArticle) PatchArticleLikeByID(c *gin.Context) error {
+	field := c.Query(utils.FieldQueryParamName)
+	if field != "like" {
+		return core.FormatError(core.MissingParameters, "参数field的值不是like", nil)
+	}
+	idReq := c.Query(utils.ArticleIdQueryParamName)
+	article := &model.Article{}
+	err := b.Tx.ExecTrans(c, func(ctx context.Context) error {
+		err := b.Model.QueryArticleByID(ctx, article, idReq)
+		if err != nil {
+			return core.FormatError(core.DBDenied, "DB查询文章失败", err)
+		}
+		err = b.Model.UpdateArticleLikeByID(ctx, article)
+		if err != nil {
+			return core.FormatError(core.DBDenied, "DB更新点赞数失败", err)
+		}
+		return nil
+	})
+	if err != nil {
+		return core.FormatError(core.DBDenied, "DB事务失败", err)
+	}
+	return nil
+}
+
 func (b *BusinessArticle) PutArticleByID(c *gin.Context) error {
 	idReq := c.Query(utils.ArticleIdQueryParamName)
 	articleReq := &schema.ArticleReq{}

@@ -19,7 +19,7 @@ type HandlerArticle struct {
 func (h *HandlerArticle) GetArticleList(c *gin.Context) {
 	list, err := h.Business.GetArticleList(c)
 	if err != nil {
-		h.Res.ResFailure(c, 500, core.Unknown, "获取文章列表失败", err)
+		h.Res.ResFailure(c, 500, core.InternalServerError, "获取文章列表失败", err)
 		return
 	}
 	h.Res.ResSuccess(c, *list)
@@ -28,7 +28,7 @@ func (h *HandlerArticle) GetArticleList(c *gin.Context) {
 func (h *HandlerArticle) GetArticleTags(c *gin.Context) {
 	tags, err := h.Business.GetArticleTags(c)
 	if err != nil {
-		h.Res.ResFailure(c, 500, core.Unknown, "获取标签列表失败", err)
+		h.Res.ResFailure(c, 500, core.InternalServerError, "获取标签列表失败", err)
 		return
 	}
 	h.Res.ResSuccess(c, *tags)
@@ -37,16 +37,25 @@ func (h *HandlerArticle) GetArticleTags(c *gin.Context) {
 func (h *HandlerArticle) GetArticleByID(c *gin.Context) {
 	article, err := h.Business.GetArticleByID(c)
 	if err != nil {
-		h.Res.ResFailure(c, 500, core.Unknown, "获取文章失败", err)
+		h.Res.ResFailure(c, 500, core.InternalServerError, "获取文章失败", err)
 		return
 	}
 	h.Res.ResSuccess(c, *article)
 }
 
+func (h *HandlerArticle) PatchArticleLikeByID(c *gin.Context) {
+	err := h.Business.PatchArticleLikeByID(c)
+	if err != nil {
+		h.Res.ResFailure(c, 500, core.InternalServerError, "获取文章失败", err)
+		return
+	}
+	h.Res.ResSuccess(c, "ok")
+}
+
 func (h *HandlerArticle) PutArticleByID(c *gin.Context) {
 	err := h.Business.PutArticleByID(c)
 	if err != nil {
-		h.Res.ResFailure(c, 500, core.Unknown, "更新文章失败", err)
+		h.Res.ResFailure(c, 500, core.InternalServerError, "更新文章失败", err)
 		return
 	}
 	h.Res.ResSuccess(c, "ok")
@@ -55,7 +64,7 @@ func (h *HandlerArticle) PutArticleByID(c *gin.Context) {
 func (h *HandlerArticle) DeleteArticleByID(c *gin.Context) {
 	err := h.Business.DeleteArticleByID(c)
 	if err != nil {
-		h.Res.ResFailure(c, 500, core.Unknown, "删除文章失败", err)
+		h.Res.ResFailure(c, 500, core.InternalServerError, "删除文章失败", err)
 		return
 	}
 	h.Res.ResSuccess(c, "ok")
@@ -64,7 +73,7 @@ func (h *HandlerArticle) DeleteArticleByID(c *gin.Context) {
 func (h *HandlerArticle) PutTagByName(c *gin.Context) {
 	err := h.Business.PutTagByName(c)
 	if err != nil {
-		h.Res.ResFailure(c, 500, core.Unknown, "更新标签失败", err)
+		h.Res.ResFailure(c, 500, core.InternalServerError, "更新标签失败", err)
 		return
 	}
 	h.Res.ResSuccess(c, "ok")
@@ -74,7 +83,7 @@ func (h *HandlerArticle) PutTagByName(c *gin.Context) {
 func (h *HandlerArticle) DeleteTagByName(c *gin.Context) {
 	err := h.Business.DeleteTagByName(c)
 	if err != nil {
-		h.Res.ResFailure(c, 500, core.Unknown, "删除标签失败", err)
+		h.Res.ResFailure(c, 500, core.InternalServerError, "删除标签失败", err)
 		return
 	}
 	h.Res.ResSuccess(c, "ok")

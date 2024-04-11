@@ -6,4 +6,5 @@ const (
 	SearchQueryParamName    = "search"
 	PageNoQueryParamName    = "pageNo"
 	PageSizeQueryParamName  = "pageSize"
+	FieldQueryParamName     = "field"
 )
