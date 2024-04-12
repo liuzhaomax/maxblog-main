@@ -2,6 +2,7 @@ package business
 
 import (
 	"context"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/google/wire"
 	"github.com/liuzhaomax/maxblog-main/internal/core"
@@ -11,6 +12,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/redis/go-redis/v9"
 	"gorm.io/gorm"
+	"os"
 	"strings"
 )
 
@@ -200,6 +202,25 @@ func (b *BusinessArticle) DeleteTagByName(c *gin.Context) error {
 	})
 	if err != nil {
 		return core.FormatError(core.DBDenied, "DB事务失败", err)
+	}
+	return nil
+}
+
+func (b *BusinessArticle) PostCoverUpload(c *gin.Context) error {
+	idReq := c.Query(utils.ArticleIdQueryParamName)
+	file, err := c.FormFile(utils.File)
+	if err != nil {
+		return core.FormatError(core.ParseIssue, "封面图片读取失败", err)
+	}
+	dir := fmt.Sprintf("%s/%s/", utils.ArticleFileUploadPath, idReq)
+	err = os.MkdirAll(dir, os.ModePerm)
+	if err != nil {
+		return core.FormatError(core.InternalServerError, "封面图片路径创建失败", err)
+	}
+	filePath := fmt.Sprintf("%s/%s/%s", utils.ArticleFileUploadPath, idReq, file.Filename)
+	err = c.SaveUploadedFile(file, filePath)
+	if err != nil {
+		return core.FormatError(core.InternalServerError, "封面图片保存失败", err)
 	}
 	return nil
 }

@@ -89,3 +89,12 @@ func (h *HandlerArticle) DeleteTagByName(c *gin.Context) {
 	}
 	h.Res.ResSuccess(c, "ok")
 }
+
+func (h *HandlerArticle) PostCoverUpload(c *gin.Context) {
+	err := h.Business.PostCoverUpload(c)
+	if err != nil {
+		h.Res.ResFailure(c, http.StatusInternalServerError, core.InternalServerError, "上传文章封面图片失败", err)
+		return
+	}
+	h.Res.ResSuccess(c, "ok")
+}

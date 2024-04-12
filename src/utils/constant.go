@@ -7,4 +7,6 @@ const (
 	PageNoQueryParamName    = "pageNo"
 	PageSizeQueryParamName  = "pageSize"
 	FieldQueryParamName     = "field"
+	File                    = "file"
+	ArticleFileUploadPath   = "www/maxblog/article"
 )

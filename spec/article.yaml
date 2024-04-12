@@ -218,6 +218,34 @@ paths:
         - $ref: '#/components/parameters/App_id'
         - $ref: '#/components/parameters/Request_id'
     parameters: []
+  /maxblog/article/article/cover/upload:
+    post:
+      summary: Upload Cover Image
+      tags:
+        - article
+      operationId: post-maxblog-article-article-cover-upload
+      responses:
+        '200':
+          $ref: '#/components/responses/200'
+        '400':
+          $ref: '#/components/responses/400'
+        '500':
+          $ref: '#/components/responses/500'
+      description: 上传文章封面图片
+      parameters:
+        - $ref: '#/components/parameters/Client_ip'
+        - $ref: '#/components/parameters/User-Agent'
+        - $ref: '#/components/parameters/Trace_id'
+        - $ref: '#/components/parameters/Span_id'
+        - $ref: '#/components/parameters/Parent_id'
+        - $ref: '#/components/parameters/App_id'
+        - $ref: '#/components/parameters/Request_id'
+        - $ref: '#/components/parameters/Authorization'
+        - $ref: '#/components/parameters/User_id'
+        - $ref: '#/components/parameters/articleId'
+      requestBody:
+        $ref: '#/components/requestBodies/CoverImage'
+    parameters: []
 components:
   schemas:
     Status:
@@ -600,3 +628,14 @@ components:
                 tags:
                   - string
       description: article请求体
+    CoverImage:
+      content:
+        multipart/form-data:
+          schema:
+            type: object
+            properties:
+              file:
+                type: string
+                format: binary
+          examples: {}
+      description: 封面图片请求体二进制数据
