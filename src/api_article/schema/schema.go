@@ -36,6 +36,9 @@ func MapArticleReq2Article(articleReq *ArticleReq) *model.Article {
 			Name: tag,
 		})
 	}
+	if article.Id == core.EmptyString {
+		article.Id = core.ShortUUID()
+	}
 	return article
 }
 
