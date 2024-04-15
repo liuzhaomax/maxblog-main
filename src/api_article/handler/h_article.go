@@ -78,7 +78,6 @@ func (h *HandlerArticle) PutTagByName(c *gin.Context) {
 		return
 	}
 	h.Res.ResSuccess(c, "ok")
-
 }
 
 func (h *HandlerArticle) DeleteTagByName(c *gin.Context) {
