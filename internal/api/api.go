@@ -19,9 +19,10 @@ type API interface {
 }
 
 type Handler struct {
-	Middleware         *middleware.Middleware
-	HandlerArticle     *handler.HandlerArticle
-	PrometheusRegistry *prometheus.Registry
+	Middleware          *middleware.Middleware
+	HandlerArticle      *handler.HandlerArticle
+	HandlerStatsArticle *handler.HandlerStatsArticle
+	PrometheusRegistry  *prometheus.Registry
 }
 
 func (h *Handler) Register(app *gin.Engine) {
@@ -42,7 +43,8 @@ func (h *Handler) Register(app *gin.Engine) {
 		root.Use(h.Middleware.Validator.ValidateHeaders())
 		root.Use(h.Middleware.Auth.ValidateSignature())
 		// dynamic api
-		router.Register(root, h.HandlerArticle, h.Middleware)
+		router.RegisterArticle(root, h.HandlerArticle, h.Middleware)
+		router.RegisterStatsArticle(root, h.HandlerStatsArticle)
 	}
 }
 

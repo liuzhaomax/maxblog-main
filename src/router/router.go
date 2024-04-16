@@ -6,7 +6,7 @@ import (
 	"github.com/liuzhaomax/maxblog-main/src/api_article/handler"
 )
 
-func Register(root *gin.RouterGroup, handler *handler.HandlerArticle, mw *middleware.Middleware) {
+func RegisterArticle(root *gin.RouterGroup, handler *handler.HandlerArticle, mw *middleware.Middleware) {
 	routerMaxBlog := root.Group("/maxblog")
 	{
 		routerArticle := routerMaxBlog.Group("/article")
@@ -21,6 +21,16 @@ func Register(root *gin.RouterGroup, handler *handler.HandlerArticle, mw *middle
 			routerArticle.PUT("/tag", handler.PutTagByName)
 			routerArticle.DELETE("/tag", handler.DeleteTagByName)
 			routerArticle.POST("/article/cover/upload", handler.PostCoverUpload)
+		}
+	}
+}
+
+func RegisterStatsArticle(root *gin.RouterGroup, handler *handler.HandlerStatsArticle) {
+	routerMaxBlog := root.Group("/maxblog")
+	{
+		routerStatsArticle := routerMaxBlog.Group("/stats/article")
+		{
+			routerStatsArticle.GET("/main", handler.GetStatsArticleMain)
 		}
 	}
 }

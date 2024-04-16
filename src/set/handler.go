@@ -7,4 +7,5 @@ import (
 
 var HandlerSet = wire.NewSet(
 	handler.HandlerArticleSet,
+	handler.HandlerStatsArticleSet,
 )
