@@ -83,7 +83,7 @@ func SelectFromMetadata(md metadata.MD, key string) string {
 	return EmptyString
 }
 
-// func SetMetadataForDownstream(ctx context.Context, downstreamName string, client *redis.Client) error {
+// func SetMetadataForDownstream(c *gin.Context, downstreamName string, client *redis.Client) error {
 //
 // }
 
@@ -94,7 +94,9 @@ func SetHeadersForDownstream(c *gin.Context, downstreamName string, client *redi
 	c.Request.Header.Set(TraceId, c.Request.Header.Get(TraceId))
 	c.Request.Header.Set(ParentId, c.Request.Header.Get(ParentId))
 	c.Request.Header.Set(AppId, cfg.App.Id)
-	userId, _ := c.Cookie(UserID)
+	c.Request.Header.Set(Authorization, c.Request.Header.Get(Authorization))
+	userId := c.Request.Header.Get(UserId)
+	c.Request.Header.Set(UserId, c.Request.Header.Get(UserId))
 	nonce := c.Request.Header.Get(ParentId) + c.Request.RequestURI
 	downstreamAppId := EmptyString
 	downstreamAppSecret := EmptyString
