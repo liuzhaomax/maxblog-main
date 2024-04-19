@@ -7,6 +7,7 @@ import (
 	"github.com/google/wire"
 	"github.com/liuzhaomax/maxblog-main/internal/core"
 	"github.com/liuzhaomax/maxblog-main/src/api_article/pb"
+	"github.com/liuzhaomax/maxblog-main/src/api_article/schema"
 	"github.com/redis/go-redis/v9"
 	"google.golang.org/grpc"
 	"net/http"
@@ -39,10 +40,11 @@ func (h *HandlerStatsArticle) GetStatsArticleMain(c *gin.Context) {
 	}
 	// 发送请求
 	client := pb.NewStatsServiceClient(conn)
-	res, err := client.GetStatsArticleMain(ctx, &pb.Empty{})
+	resRpc, err := client.GetStatsArticleMain(ctx, &pb.Empty{})
 	if err != nil {
 		h.Res.ResFailure(c, http.StatusInternalServerError, core.InternalServerError, "桩函数请求调用失败", err)
 		return
 	}
+	res := schema.MapStatsArticleMainRes(resRpc)
 	h.Res.ResSuccess(c, res)
 }

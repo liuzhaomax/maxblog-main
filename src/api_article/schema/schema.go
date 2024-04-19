@@ -3,6 +3,7 @@ package schema
 import (
 	"github.com/liuzhaomax/maxblog-main/internal/core"
 	"github.com/liuzhaomax/maxblog-main/src/api_article/model"
+	"github.com/liuzhaomax/maxblog-main/src/api_article/pb"
 )
 
 type ArticleReq struct {
@@ -104,4 +105,20 @@ func MakeTagsRes(tags *[]model.Tag) *[]string {
 		tagsRes = append(tagsRes, MapTag2TagRes(&tag))
 	}
 	return &tagsRes
+}
+
+// Stats
+
+type StatsArticleMainRes struct {
+	Quantity int `json:"quantity"`
+	View     int `json:"view"`
+	Like     int `json:"like"`
+}
+
+func MapStatsArticleMainRes(rpcRes *pb.StatsArticleMainRes) *StatsArticleMainRes {
+	return &StatsArticleMainRes{
+		Quantity: int(rpcRes.Quantity),
+		View:     int(rpcRes.View),
+		Like:     int(rpcRes.Like),
+	}
 }
