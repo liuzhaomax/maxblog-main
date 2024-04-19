@@ -91,10 +91,12 @@ func SetMetadataForDownstreamFromHttpHeaders(ctx context.Context, c *gin.Context
 	mdMap[RequestId] = c.Request.Header.Get(RequestId)
 	mdMap[TraceId] = c.Request.Header.Get(TraceId)
 	mdMap[ParentId] = c.Request.Header.Get(ParentId)
+	mdMap[SpanId] = c.Request.Header.Get(SpanId)
 	mdMap[AppId] = cfg.App.Id
 	mdMap[UserId] = c.Request.Header.Get(UserId)
 	mdMap[Authorization] = c.Request.Header.Get(Authorization)
 	mdMap[RequestURI] = c.Request.RequestURI
+	mdMap[UberTraceId] = c.Request.Header.Get(UberTraceId)
 	md := metadata.New(mdMap)
 	newCtx := metadata.NewOutgoingContext(ctx, md)
 	// 接口签名用
@@ -135,6 +137,7 @@ func SetHeadersForDownstream(c *gin.Context, downstreamName string, client *redi
 	c.Request.Header.Set(RequestId, c.Request.Header.Get(RequestId))
 	c.Request.Header.Set(TraceId, c.Request.Header.Get(TraceId))
 	c.Request.Header.Set(ParentId, c.Request.Header.Get(ParentId))
+	c.Request.Header.Set(SpanId, c.Request.Header.Get(SpanId))
 	c.Request.Header.Set(AppId, cfg.App.Id)
 	c.Request.Header.Set(Authorization, c.Request.Header.Get(Authorization))
 	c.Request.Header.Set(UserId, c.Request.Header.Get(UserId))

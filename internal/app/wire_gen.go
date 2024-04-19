@@ -81,9 +81,10 @@ func InitInjector() (*Injector, func(), error) {
 		RocketMQ: rocketMQ,
 	}
 	handlerStatsArticle := &handler.HandlerStatsArticle{
-		Logger:   coreLogger,
-		Res:      response,
-		RocketMQ: rocketMQ,
+		Logger:      coreLogger,
+		Res:         response,
+		RedisClient: client,
+		RocketMQ:    rocketMQ,
 	}
 	registry := core.InitPrometheusRegistry()
 	apiHandler := &api.Handler{

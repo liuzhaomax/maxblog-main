@@ -41,6 +41,7 @@ const (
 	// redis
 	Signature = "signature"
 	// jaeger
-	Tracer = "tracer"
-	Parent = "parent"
+	Tracer      = "tracer"
+	Parent      = "parent"
+	UberTraceId = "uber-trace-id"
 )
