@@ -44,5 +44,5 @@ func (h *HandlerStatsArticle) GetStatsArticleMain(c *gin.Context) {
 		h.Res.ResFailure(c, http.StatusInternalServerError, core.InternalServerError, "桩函数请求调用失败", err)
 		return
 	}
-	h.Res.ResSuccess(c, res.Data)
+	h.Res.ResSuccess(c, res)
 }
