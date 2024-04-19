@@ -32,8 +32,14 @@ func (h *HandlerStatsArticle) GetStatsArticleMain(c *gin.Context) {
 	}
 	// 拨号连接
 	addr := fmt.Sprintf("%s:%s", cfg.Downstreams[0].Endpoint.Host, cfg.Downstreams[0].Endpoint.Port)
-	conn, err := grpc.Dial(addr, grpc.WithInsecure())
-	defer conn.Close()
+	conn, err := grpc.Dial(addr, grpc.WithInsecure()) //nolint:staticcheck
+	defer func() {
+		err2 := conn.Close()
+		if err2 != nil {
+			return
+		}
+	}()
+
 	if err != nil {
 		h.Res.ResFailure(c, http.StatusInternalServerError, core.InternalServerError, "连接拨号失败", err)
 		return
