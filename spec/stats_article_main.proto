@@ -5,7 +5,7 @@ syntax="proto3";
 option go_package="/pb";
 
 service StatsService {
-  //  rpc GetStatsArticleMain(google.protobuf.Empty) returns (StatsArticleMainRes);
+//  rpc GetStatsArticleMain(google.protobuf.Empty) returns (StatsArticleMainRes);
   rpc GetStatsArticleMain(Empty) returns (StatsArticleMainRes);
 }
 
