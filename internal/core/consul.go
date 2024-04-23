@@ -30,7 +30,6 @@ func (c *Consul) ServiceRegister() error {
 	agentServiceRegistration.Tags = []string{cfg.App.Name, cfg.Server.Protocol}
 	serverAddr := fmt.Sprintf("http://%s:%s/health", cfg.Server.Host, cfg.Server.Port)
 	check := api.AgentServiceCheck{
-		// GRPC: serverAddr,
 		HTTP:                           serverAddr,
 		Timeout:                        fmt.Sprintf("%ds", cfg.Lib.Consul.Timeout),
 		Interval:                       fmt.Sprintf("%ds", cfg.Lib.Consul.Interval),
@@ -51,25 +50,25 @@ func (c *Consul) ServiceDiscover() error {
 	if err != nil {
 		return err
 	}
+	services := []*api.CatalogService{}
 	for i, downstream := range cfg.Downstreams {
-		services, _, err := client.Catalog().Service(downstream.Name, cfg.Server.Protocol, nil)
+		servicesHTTP, _, err := client.Catalog().Service(downstream.Name, "http", nil)
 		if err != nil {
 			return err
 		}
+		services = append(services, servicesHTTP...)
+		servicesRPC, _, err := client.Catalog().Service(downstream.Name, "grpc", nil)
+		if err != nil {
+			return err
+		}
+		services = append(services, servicesRPC...)
 		if len(services) == 0 {
 			return fmt.Errorf("未发现可用服务: %s: %s:%s", downstream.Name, downstream.Host, downstream.Port)
 		}
 		for _, service := range services {
-			fmt.Println("------------")
-			fmt.Println(service.ServiceName)
-			fmt.Println("------------")
 			if downstream.Name == service.ServiceName {
 				cfg.Downstreams[i].Endpoint.Host = service.ServiceAddress
 				cfg.Downstreams[i].Endpoint.Port = strconv.Itoa(service.ServicePort)
-				fmt.Println("=============")
-				fmt.Println(cfg.Downstreams[i].Name)
-				fmt.Println(cfg.Downstreams[i].Endpoint.Port)
-				fmt.Println("=============")
 			}
 		}
 	}
