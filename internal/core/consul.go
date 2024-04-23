@@ -50,16 +50,16 @@ func (c *Consul) ServiceDiscover() error {
 	if err != nil {
 		return err
 	}
-	services := []*api.CatalogService{}
 	for i, downstream := range cfg.Downstreams {
-		servicesHTTP, _, err := client.Catalog().Service(downstream.Name, "http", nil)
-		if err != nil {
-			return err
+		services := []*api.CatalogService{}
+		servicesHTTP, _, errHttp := client.Catalog().Service(downstream.Name, "http", nil)
+		if errHttp != nil {
+			return errHttp
 		}
 		services = append(services, servicesHTTP...)
-		servicesRPC, _, err := client.Catalog().Service(downstream.Name, "grpc", nil)
-		if err != nil {
-			return err
+		servicesRPC, _, errRPC := client.Catalog().Service(downstream.Name, "grpc", nil)
+		if errRPC != nil {
+			return errRPC
 		}
 		services = append(services, servicesRPC...)
 		if len(services) == 0 {
