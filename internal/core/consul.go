@@ -63,6 +63,10 @@ func (c *Consul) ServiceDiscover() error {
 			if downstream.Name == service.ServiceName {
 				cfg.Downstreams[i].Endpoint.Host = service.ServiceAddress
 				cfg.Downstreams[i].Endpoint.Port = strconv.Itoa(service.ServicePort)
+				fmt.Println("=============")
+				fmt.Println(cfg.Downstreams[i].Name)
+				fmt.Println(cfg.Downstreams[i].Endpoint.Port)
+				fmt.Println("=============")
 			}
 		}
 	}
