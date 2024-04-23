@@ -60,6 +60,9 @@ func (c *Consul) ServiceDiscover() error {
 			return fmt.Errorf("未发现可用服务: %s: %s:%s", downstream.Name, downstream.Host, downstream.Port)
 		}
 		for _, service := range services {
+			fmt.Println("------------")
+			fmt.Println(service.ServiceName)
+			fmt.Println("------------")
 			if downstream.Name == service.ServiceName {
 				cfg.Downstreams[i].Endpoint.Host = service.ServiceAddress
 				cfg.Downstreams[i].Endpoint.Port = strconv.Itoa(service.ServicePort)
