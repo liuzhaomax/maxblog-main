@@ -51,17 +51,10 @@ func (c *Consul) ServiceDiscover() error {
 		return err
 	}
 	for i, downstream := range cfg.Downstreams {
-		services := []*api.CatalogService{}
-		servicesHTTP, _, errHttp := client.Catalog().Service(downstream.Name, "http", nil)
-		if errHttp != nil {
-			return errHttp
+		services, _, err := client.Catalog().Service(downstream.Name, EmptyString, nil)
+		if err != nil {
+			return err
 		}
-		services = append(services, servicesHTTP...)
-		servicesRPC, _, errRPC := client.Catalog().Service(downstream.Name, "grpc", nil)
-		if errRPC != nil {
-			return errRPC
-		}
-		services = append(services, servicesRPC...)
 		if len(services) == 0 {
 			return fmt.Errorf("未发现可用服务: %s: %s:%s", downstream.Name, downstream.Host, downstream.Port)
 		}
