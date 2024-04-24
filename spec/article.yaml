@@ -246,6 +246,34 @@ paths:
       requestBody:
         $ref: '#/components/requestBodies/CoverImage'
     parameters: []
+  /maxblog/article/article/content/upload:
+    post:
+      summary: Upload Content Static File
+      tags:
+        - article
+      operationId: post-maxblog-article-article-content-upload
+      responses:
+        '200':
+          $ref: '#/components/responses/200'
+        '400':
+          $ref: '#/components/responses/400'
+        '500':
+          $ref: '#/components/responses/500'
+      description: 上传文章封面图片
+      parameters:
+        - $ref: '#/components/parameters/Client_ip'
+        - $ref: '#/components/parameters/User-Agent'
+        - $ref: '#/components/parameters/Trace_id'
+        - $ref: '#/components/parameters/Span_id'
+        - $ref: '#/components/parameters/Parent_id'
+        - $ref: '#/components/parameters/App_id'
+        - $ref: '#/components/parameters/Request_id'
+        - $ref: '#/components/parameters/Authorization'
+        - $ref: '#/components/parameters/User_id'
+        - $ref: '#/components/parameters/articleId'
+      requestBody:
+        $ref: '#/components/requestBodies/ContentFile'
+    parameters: []
 components:
   schemas:
     Status:
@@ -639,3 +667,15 @@ components:
                 format: binary
           examples: {}
       description: 封面图片请求体二进制数据
+    ContentFile:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              file:
+                type: string
+                x-stoplight:
+                  id: oilhztsznuphn
+                format: binary
+      description: 文章内容静态文件
