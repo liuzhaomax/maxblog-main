@@ -206,21 +206,22 @@ func (b *BusinessArticle) DeleteTagByName(c *gin.Context) error {
 	return nil
 }
 
-func (b *BusinessArticle) PostCoverUpload(c *gin.Context) error {
+func (b *BusinessArticle) PostFileUpload(c *gin.Context) (string, error) {
 	idReq := c.Query(utils.ArticleIdQueryParamName)
 	file, err := c.FormFile(utils.File)
 	if err != nil {
-		return core.FormatError(core.ParseIssue, "封面图片读取失败", err)
+		return core.EmptyString, core.FormatError(core.ParseIssue, "文件读取失败", err)
 	}
 	dir := fmt.Sprintf("%s/%s/", utils.ArticleFileUploadPath, idReq)
 	err = os.MkdirAll(dir, os.ModePerm)
 	if err != nil {
-		return core.FormatError(core.InternalServerError, "封面图片路径创建失败", err)
+		return core.EmptyString, core.FormatError(core.InternalServerError, "文件路径创建失败", err)
 	}
 	filePath := fmt.Sprintf("%s/%s/%s", utils.ArticleFileUploadPath, idReq, file.Filename)
 	err = c.SaveUploadedFile(file, filePath)
 	if err != nil {
-		return core.FormatError(core.InternalServerError, "封面图片保存失败", err)
+		return core.EmptyString, core.FormatError(core.InternalServerError, "文件保存失败", err)
 	}
-	return nil
+	path := fmt.Sprintf("/%s/%s", utils.ArticleFileUploadPath, idReq)
+	return path, nil
 }

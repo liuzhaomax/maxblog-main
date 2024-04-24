@@ -21,6 +21,7 @@ func RegisterArticle(root *gin.RouterGroup, handler *handler.HandlerArticle, mw 
 			routerArticle.PUT("/tag", handler.PutTagByName)
 			routerArticle.DELETE("/tag", handler.DeleteTagByName)
 			routerArticle.POST("/article/cover/upload", handler.PostCoverUpload)
+			routerArticle.POST("/article/content/upload", handler.PostContentFileUpload)
 		}
 	}
 }

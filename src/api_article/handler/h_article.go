@@ -90,10 +90,19 @@ func (h *HandlerArticle) DeleteTagByName(c *gin.Context) {
 }
 
 func (h *HandlerArticle) PostCoverUpload(c *gin.Context) {
-	err := h.Business.PostCoverUpload(c)
+	_, err := h.Business.PostFileUpload(c)
 	if err != nil {
 		h.Res.ResFailure(c, http.StatusInternalServerError, core.InternalServerError, "上传文章封面图片失败", err)
 		return
 	}
 	h.Res.ResSuccess(c, "ok")
+}
+
+func (h *HandlerArticle) PostContentFileUpload(c *gin.Context) {
+	path, err := h.Business.PostFileUpload(c)
+	if err != nil {
+		h.Res.ResFailure(c, http.StatusInternalServerError, core.InternalServerError, "上传文章内容文件失败", err)
+		return
+	}
+	h.Res.ResSuccess(c, path)
 }
