@@ -254,7 +254,7 @@ paths:
       operationId: post-maxblog-article-article-content-upload
       responses:
         '200':
-          $ref: '#/components/responses/200'
+          $ref: '#/components/responses/200-upload-content-file'
         '400':
           $ref: '#/components/responses/400'
         '500':
@@ -502,6 +502,30 @@ components:
                   content: string
                   tags:
                     - string
+    200-upload-content-file:
+      description: 上传文章内容图片返回链接path字符串
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: '#/components/schemas/Status'
+              data:
+                type: string
+                x-stoplight:
+                  id: r2oz119t44i9o
+          examples:
+            Example 1:
+              value:
+                status:
+                  code: 0
+                  desc: string
+                data: string
+        application/xml:
+          schema:
+            type: object
+            properties: {}
   parameters:
     Client_ip:
       name: Client_ip

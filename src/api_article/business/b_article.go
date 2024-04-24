@@ -222,6 +222,6 @@ func (b *BusinessArticle) PostFileUpload(c *gin.Context) (string, error) {
 	if err != nil {
 		return core.EmptyString, core.FormatError(core.InternalServerError, "文件保存失败", err)
 	}
-	path := fmt.Sprintf("/%s/%s", utils.ArticleFileUploadPath, idReq)
+	path := fmt.Sprintf("/%s/%s/%s", utils.ArticleFileUploadPath, idReq, file.Filename)
 	return path, nil
 }
