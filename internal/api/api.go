@@ -3,6 +3,7 @@ package api
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/wire"
+	"github.com/liuzhaomax/maxblog-main/internal/core"
 	"github.com/liuzhaomax/maxblog-main/internal/middleware"
 	"github.com/liuzhaomax/maxblog-main/internal/middleware/cors"
 	"github.com/liuzhaomax/maxblog-main/src/api_article/handler"
@@ -36,6 +37,8 @@ func (h *Handler) Register(app *gin.Engine) {
 	app.GET("/metrics", h.MetricsHandler)
 	// jaeger
 	app.Use(h.Middleware.Tracing.Trace())
+	// 日志
+	app.Use(core.LoggerForHTTP())
 	// root route
 	root := app.Group("")
 	{

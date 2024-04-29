@@ -52,8 +52,6 @@ func (t *Tracing) Trace() gin.HandlerFunc {
 		spanID := spanContext.(jaeger.SpanContext).SpanID().String()
 		if parent != core.EmptyString {
 			c.Request.Header.Set(core.ParentId, c.Request.Header.Get(core.SpanId))
-		} else {
-			c.Request.Header.Set(core.ParentId, spanID)
 		}
 		c.Request.Header.Set(core.TraceId, traceID)
 		c.Request.Header.Set(core.SpanId, spanID)
