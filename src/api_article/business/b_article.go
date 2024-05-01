@@ -109,20 +109,25 @@ func (b *BusinessArticle) PutArticleByID(c *gin.Context) error {
 	if idReq != articleReq.Id {
 		return core.FormatError(core.Forbidden, "Query信息与请求体信息不符", err)
 	}
+	err = validateArticleFields(articleReq)
+	if err != nil {
+		return core.FormatError(core.Forbidden, "校验失败", err)
+	}
 	article := &model.Article{}
 	err = b.Tx.ExecTrans(c, func(ctx context.Context) error {
 		err := b.Model.QueryArticleByID(ctx, article, articleReq.Id)
 		if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
 			return core.FormatError(core.DBDenied, "DB查询文章失败", err)
 		}
-		article = schema.MapArticleReq2Article(articleReq)
+		articleToDB := schema.MapArticleReq2Article(articleReq)
+		articleToDB.Model = article.Model
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			err = b.Model.CreateArticle(ctx, article)
+			err = b.Model.CreateArticle(ctx, articleToDB)
 			if err != nil {
 				return core.FormatError(core.DBDenied, "DB创建文章失败", err)
 			}
 		} else {
-			err = b.Model.UpdateArticleByID(ctx, article, articleReq.Id)
+			err = b.Model.UpdateArticleByID(ctx, articleToDB, articleReq.Id)
 			if err != nil {
 				return core.FormatError(core.DBDenied, "DB更新文章失败", err)
 			}

@@ -111,7 +111,7 @@ func (m *ModelArticle) UpdateArticleByID(ctx context.Context, article *Article, 
 		Set("gorm:query_option", "FOR UPDATE").
 		Preload("Tags").
 		Where("id=?", articleId).
-		Updates(article)
+		Save(article)
 	if result.Error != nil {
 		return result.Error
 	}
