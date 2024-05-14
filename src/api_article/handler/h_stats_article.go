@@ -25,7 +25,7 @@ type HandlerStatsArticle struct {
 func (h *HandlerStatsArticle) GetStatsArticleMain(c *gin.Context) {
 	cfg := core.GetConfig()
 	// 设置元信息
-	ctx, err := core.SetMetadataForDownstreamFromHttpHeaders(context.Background(), c)
+	ctx, err := core.SetMetadataForDownstreamFromHttpHeaders(context.Background(), c, cfg.Downstreams[0].Name)
 	if err != nil {
 		h.Res.ResFailure(c, http.StatusInternalServerError, core.InternalServerError, "设置下游请求元信息失败", err)
 		return
