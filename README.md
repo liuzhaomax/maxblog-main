@@ -1,2 +1,1 @@
 # Maxblog-main
-Maxblog-main
